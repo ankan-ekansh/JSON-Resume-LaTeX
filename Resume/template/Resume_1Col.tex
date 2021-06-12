@@ -1,0 +1,65 @@
+% !TEX program = xelatex
+\documentclass[a4paper]{article}
+\usepackage{titlesec} \usepackage{titling}
+\usepackage[margin=0.4in]{geometry}
+\usepackage{fontawesome5} \usepackage{xcolor} \usepackage{graphicx} 
+\usepackage[prefix=Material]{xcolor-material}
+\usepackage{blindtext} \usepackage[most]{tcolorbox}
+\usepackage{microtype} \usepackage{enumitem}
+\usepackage{fontspec}\usepackage{multicol}
+\usepackage{scalerel} \usepackage{suffix}
+\pagestyle{empty}
+
+\newcommand{\AuthorName}{Ishaan Aditya}
+\newcommand{\postapp}{Machine Learning Engineer}
+\newcommand{\email}{ishaanaditya.v@gmail.com}
+\newcommand{\phone}{916204507435}
+\newcommand{\PhoneFormatted}{(+91) 620 450 7435}
+\newcommand{\university}{Birla Insitute of Technology, Mesra}
+
+\newcommand{\maincolor}{MaterialDeepOrange}
+\newcommand{\seccolor}{MaterialGrey}
+
+% PDF METADATA
+\usepackage[
+    hidelinks, pdfauthor={\AuthorName},
+    pdftitle={Resume (\AuthorName)},
+    pdfsubject={}, pdfkeywords={\postapp},
+    pdfproducer={LaTeX}, pdfcreator={}
+]{hyperref}
+
+\newcommand{\FontPath}[1]{../resources/fonts/#1/}
+% \setsansfont{NeutraText-Book}[Path = \FontPath{Neutra},Extension = .otf]
+
+\setsansfont{Neutraface2Text}[
+    Path = \FontPath{Neutraface2Text}, Extension = .otf,
+    UprightFont = *-Book, ItalicFont = *-BookItalic,
+    BoldFont = *-Demi, BoldItalicFont = *-DemiItalic
+]
+
+\setmainfont{Lato}[
+    Path = \FontPath{Lato}, Extension = .ttf,
+    UprightFont = *-Regular, BoldFont = *-Bold, 
+    ItalicFont = *-Italic, BoldItalicFont = *-BoldItalic,]
+
+\setmonofont{FiraCode}[
+    Path = \FontPath{Fira-Code}, Extension = .ttf,
+    UprightFont = *-Regular]
+
+\input{./res/macros.tex}
+
+\renewcommand{\maketitle}
+{\begin{center}
+    {\Huge  \sffamily \AuthorName} \\[0.5em]
+    \ttfamily \color{MaterialGrey600}{
+        \href{mailto:\email}{\email} |
+        \href{https://wa.me/\phone}{\PhoneFormatted}
+    }
+\end{center}}
+
+\begin{document}
+\maketitle
+
+\input{./res/resume_content.tex}
+
+\end{document}
