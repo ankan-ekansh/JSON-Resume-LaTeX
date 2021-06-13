@@ -1,0 +1,197 @@
+{
+    "basics": {
+        "name": "Ishaan Aditya",
+        "label": "Programmer",
+        "picture": "",
+        "email": "ishaanaditya.v@gmail.com",
+        "phone": "(+91) 620 450 7435",
+        "website": null,
+        "summary": "I am a good engineer. I hope",
+        "location": {
+            "address": "Birla Institute of Technology",
+            "postalCode": "835215",
+            "city": "Ranchi",
+            "countryCode": "IN",
+            "region": ""
+        },
+        "profiles": [
+            {
+                "network": "GitHub",
+                "username": "15H44N",
+                "url": "http://www.github.com/15H44N"
+            },
+            {
+                "network": "Kaggle",
+                "username": "ishaanaditya",
+                "url": "https://www.kaggle.com/ishaanaditya"
+            },
+            {
+                "network": "LinkedIn",
+                "username": "ishaan-aditya",
+                "url": "https://www.linkedin.com/in/ishaan-aditya"
+            }
+        ]
+    },
+    "work": [
+        {
+            "company": "Axis Bank",
+            "position": "Summer Intern",
+            "website": "https://axisbank.com",
+            "startDate": "2021-05-24",
+            "endDate": "2021-07-16",
+            "summary": "",
+            "highlights": [
+                "Worked in Analytics (It was NOT Real job)",
+                "Made Spreadsheet, Document & PPT for no reason ",
+                "Wasted Time, Grinded Leetcode Problems by night",
+                "Awarded 'Volunteer of the Month'"
+            ]
+        },
+        {
+            "company": "Indian Institute of Technology ISM Dhanbad",
+            "position": "Data Analyst Intern",
+            "website": null,
+            "startDate" : "2020-09-05",
+            "endDate"   : "2020-11-24",
+            "summary": "",
+            "highlights": [
+                "I was mentored by Dr. V.M.S.R. Murthy, IIT-ISM Dhanbad and also Mr. G. Gopinath, Scientist at the NIRM, Bengaluru.",
+                "Created and ensembled ML & DL Models for different sparse distributions of a tabular dataset.",
+                "Used CTGAN and CopulaGAN models to  create a synthetic dataset for better training data",
+                "Writing a research paper on the findings of the same with Mr. Gopinath"
+            ]
+        }
+    ],
+    "volunteer": [
+        {
+            "organization": "Organization",
+            "position": "Volunteer",
+            "website": "http://organization.com/",
+            "startDate": "2012-01-01",
+            "endDate": "2013-01-01",
+            "summary": "",
+            "highlights": [
+                "Awarded 'Volunteer of the Month'"
+            ]
+        }
+    ],
+    "education": [
+        {
+            "institution": "Birla Institue of Technology, Mesra",
+            "area": "Electronics & Communication Engineering",
+            "studyType": "Bachelor of Technology (ECE)",
+            "startDate": "2018-07-01",
+            "endDate": "2022-04-01",
+            "gpa": "7.98",
+            // "highlights" changed from original "courses" 
+            "highlights": [
+                "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
+                "Served as General Body Member, Dhwani Music Club, BIT Mesra"
+            ]
+        }
+    ],
+    // "awards": [
+    //     {
+    //         "title": "Award",
+    //         "date": "2014-11-01",
+    //         "awarder": "Company",
+    //         "summary": "There is no spoon."
+    //     }
+    // ],
+    // "publications": [
+    //     {
+    //         "name": "Publication",
+    //         "publisher": "Company",
+    //         "releaseDate": "2014-10-01",
+    //         "website": "http://publication.com",
+    //         "summary": "Description..."
+    //     }
+    // ],
+    "skills": [
+        {
+            "name": "Programmming Languages",
+            "level": "Noob",
+            "keywords": [
+                "Python",
+                "C++",
+                "Bash"
+            ]
+        },
+        {
+            "name": "Libraries & Frameworks",
+            "level": "Noob",
+            "keywords": [
+                "Tensorflow",
+                "PyTorch",
+                "Selenium",
+                "SKLearn",
+                "Plotly",
+                "FastAPI",
+                "Pandas",
+                "BeautifulSoup"
+            ]
+        },
+        {
+            "name": "Tools & Technology",
+            "level": "Noob",
+            "keywords": [
+                "\\LaTeX",
+                "Git",
+                "Office",
+                "Jupyter"
+            ]
+        },
+        {
+            "name": "AIOps & Cloud",
+            "level": "Noob",
+            "keywords": [
+                "Docker",
+                "Linux",
+                "AWS",
+                "Heroku"
+            ]
+        },
+        {
+            "name": "Machine Learning",
+            "level": "Noob",
+            "keywords": [
+                "Deep Learning",
+                "NLP",
+                "Object Detection",
+                "GANs"
+            ]
+        },
+        {
+            "name": "Web Technology",
+            "level": "Noob",
+            "keywords": [
+                "NoSQL",
+                "MongoDB",
+                "REST",
+                "Apache Spark",
+                "Nginx"
+            ]
+        }
+    ],
+    "languages": [
+        {
+            "language": "English",
+            "fluency": "Native speaker"
+        }
+    ],
+    // "interests": [
+    //     {
+    //         "name": "Wildlife",
+    //         "keywords": [
+    //             "Ferrets",
+    //             "Unicorns"
+    //         ]
+    //     }
+    // ],
+    "references": [
+        {
+            "name": "John Doe",
+            "reference": "Reference"
+        }
+    ]
+}
