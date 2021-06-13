@@ -1,8 +1,8 @@
 {
     "meta": {
         "lastModified": "",
-        "mainColor": "MaterialDeepOrange",
-        "secColor": "MaterialGrey"
+        "main_color": "MaterialBlue",
+        "sec_color": "MaterialGrey"
     },
     "basics": {
         "name": "Ishaan Aditya",
@@ -23,6 +23,11 @@
         "profiles": [
             {
                 "network": "github",
+                "username": "15H44N",
+                "url": "http://www.github.com/15H44N"
+            },
+            {
+                "network": "hackerearth",
                 "username": "15H44N",
                 "url": "http://www.github.com/15H44N"
             },
