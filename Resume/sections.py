@@ -1,14 +1,58 @@
-from typing import List
 from pylatex import escape_latex
 from string import Template
-import json
-import logging
-import textwrap
 from datetime import datetime
-import inspect
-from rich import print
+from typing import List
+import json
+import textwrap
+import logging
 
+from rich import print
 from rich.syntax import Syntax
+
+
+class MetaData:
+    colors = {"main_color": "MaterialDeepOrange", "sec_color": "MaterialGrey"}
+
+    def __init__(self, data: dict) -> None:
+        self.name = data.get("name")
+        self.position = data.get("label")
+        self.email = data.get("email")
+        self.phone = data.get("phone")
+        self.phone_fmt = data.get("phoneFormat")
+
+    def set_colors(self, colors: dict = None):
+        if not colors:
+            colors = MetaData.colors
+
+        self.main_color = colors["main_color"]
+        self.sec_color = colors["sec_color"]
+
+    def to_latex(self):
+        if (not self.main_color) and (not self.sec_color):
+            self.main_color = MetaData.colors["main_color"]
+            self.sec_color = MetaData.colors["sec_color"]
+
+        template_str = """\
+            \\newcommand{\\AuthorName}{$name}
+            \\newcommand{\\postapp}{$position}
+            \\newcommand{\\email}{$email}
+            \\newcommand{\\phone}{$phone}
+            \\newcommand{\\PhoneFormatted}{$phone_fmt}
+            
+            \\newcommand{\\maincolor}{$main_color}
+            \\newcommand{\\seccolor}{$sec_color}
+            """
+        template = Template(textwrap.dedent(template_str))
+        data = {
+            "name": self.name,
+            "position": self.position,
+            "email": self.email,
+            "phone": self.phone,
+            "phone_fmt": self.phone_fmt,
+            "main_color": self.main_color,
+            "sec_color": self.sec_color,
+        }
+        return template.safe_substitute(data)
 
 
 class ProfileLink:
@@ -204,15 +248,64 @@ class TechnicalSkills:
         template = Template(template_str)
         data = {
             "name": self.name,
-            "items": ", ".join([escape_latex(i) for i in self.keywords]),
+            "items": ", ".join([i for i in self.keywords]),
         }
         return template.safe_substitute(data)
 
 
 class Project:
+    _config = {"datefmt": "%b %Y"}
     # TODO: Write this class
-    def __init__(self) -> None:
-        pass
+
+    def __init__(self, data: dict) -> None:
+        self.name = data.get("name")
+        self.description = data.get("description")
+        self.highlights: List[str] = data.get("highlights")
+        self.keywords = data.get("keywords")
+        self.startDate = data.get("startDate")
+        self.endDate = data.get("endDate")
+        self.url = data.get("url")
+        self.roles = data.get("roles")
+        self.entity = data.get("entity")
+        self.type = data.get("type")
+
+    def parse_dates(self):
+        self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
+        self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
+
+    def to_latex(self):
+        self.parse_dates()
+        config = Project._config
+
+        template_str = """\
+            \\ProjectHead
+            {$name}
+            {$start to $end}
+            {$url}
+            {$keywords}
+            
+            \\begin{itemize}
+            \t$highlights
+            \\end{itemize}
+            \\smallskip
+            """
+        template = Template(textwrap.dedent(template_str))
+
+        def list_to_string_itemize(x: List[str], latex_esc=True):
+            if latex_esc:
+                return "\n\t".join([f"\\item {escape_latex(i)}" for i in x])
+            else:
+                return "\n\t".join([f"\\item {i}" for i in x])
+
+        data = {
+            "name": self.name,
+            "start": self.start.strftime(config["datefmt"]),
+            "end": self.end.strftime(config["datefmt"]),
+            "keywords": ", ".join(self.keywords),
+            "url": self.url,
+            "highlights": list_to_string_itemize(self.highlights),
+        }
+        return template.safe_substitute(data)
 
 
 class Achievements:
@@ -226,6 +319,19 @@ def test():
         syn = Syntax(code, lexer_name="latex", background_color="default")
         print(syn)
         print("\n")
+
+    def test_meta():
+        data = {
+            "name": "Ishaan Aditya",
+            "label": "MLE",
+            "picture": "",
+            "email": "ishaanaditya.v@gmail.com",
+            "phone": "916204507435",
+            "phoneFormat": "(+91) 620 450 7435",
+        }
+        meta = MetaData(data)
+        meta.set_colors()
+        print_latex_syntax(meta.to_latex())
 
     def test_profile_link():
         data = {
@@ -290,17 +396,40 @@ def test():
         ts = TechnicalSkills(**data)
         print_latex_syntax(ts.to_latex())
 
+    def test_projects():
+        data = {
+            "name": "Miss Direction",
+            "description": "A mapping engine that misguides you",
+            "highlights": [
+                "Won award at AIHacks 2016",
+                "Built by all women team of newbie programmers",
+                "Using modern technologies such as GoogleMaps, Chrome Extension and Javascript",
+            ],
+            "keywords": ["GoogleMaps", "Chrome Extension", "Javascript"],
+            "startDate": "2016-08-24",
+            "endDate": "2016-08-24",
+            "url": "missdirection.example.com",
+            "roles": ["Team lead", "Designer"],
+            "entity": "Smoogle",
+            "type": "application",
+        }
+
+        proj = Project(data)
+        print_latex_syntax(proj.to_latex())
+
     # running tests
-    test_profile_link()
-    test_experience()
-    test_education()
-    test_techskills()
+    # test_profile_link()
+    # test_experience()
+    # test_education()
+    # test_techskills()
+    # test_projects()
+    # test_meta()
 
 
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
-        filename="../resume_creation.log",
+        filename="./resume_creation.log",
         filemode="a",
         format="%(levelname)s - %(asctime)s - %(message)s",
         datefmt="%d-%b-%y %H:%M:%S",

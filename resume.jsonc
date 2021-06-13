@@ -1,32 +1,38 @@
 {
+    "meta": {
+        "lastModified": "",
+        "mainColor": "MaterialDeepOrange",
+        "secColor": "MaterialGrey"
+    },
     "basics": {
         "name": "Ishaan Aditya",
         "label": "Programmer",
         "picture": "",
         "email": "ishaanaditya.v@gmail.com",
-        "phone": "(+91) 620 450 7435",
+        "phone": "916204507435",
+        "phoneFormat": "(+91) 620 450 7435",
         "website": null,
         "summary": "I am a good engineer. I hope",
         "location": {
-            "address": "Birla Institute of Technology",
-            "postalCode": "835215",
-            "city": "Ranchi",
+            "address": "A3 Tata Officers' Colony, Dhanbad",
+            "postalCode": "828301",
+            "city": "Dhanbad",
             "countryCode": "IN",
-            "region": ""
+            "region": "Jharkhand"
         },
         "profiles": [
             {
-                "network": "GitHub",
+                "network": "github",
                 "username": "15H44N",
                 "url": "http://www.github.com/15H44N"
             },
             {
-                "network": "Kaggle",
+                "network": "kaggle",
                 "username": "ishaanaditya",
                 "url": "https://www.kaggle.com/ishaanaditya"
             },
             {
-                "network": "LinkedIn",
+                "network": "linkedin",
                 "username": "ishaan-aditya",
                 "url": "https://www.linkedin.com/in/ishaan-aditya"
             }
@@ -43,16 +49,15 @@
             "highlights": [
                 "Worked in Analytics (It was NOT Real job)",
                 "Made Spreadsheet, Document & PPT for no reason ",
-                "Wasted Time, Grinded Leetcode Problems by night",
-                "Awarded 'Volunteer of the Month'"
+                "Wasted Time, Grinded Leetcode Problems by night"
             ]
         },
         {
             "company": "Indian Institute of Technology ISM Dhanbad",
             "position": "Data Analyst Intern",
             "website": null,
-            "startDate" : "2020-09-05",
-            "endDate"   : "2020-11-24",
+            "startDate": "2020-09-05",
+            "endDate": "2020-11-24",
             "summary": "",
             "highlights": [
                 "I was mentored by Dr. V.M.S.R. Murthy, IIT-ISM Dhanbad and also Mr. G. Gopinath, Scientist at the NIRM, Bengaluru.",
@@ -64,15 +69,13 @@
     ],
     "volunteer": [
         {
-            "organization": "Organization",
-            "position": "Volunteer",
-            "website": "http://organization.com/",
-            "startDate": "2012-01-01",
-            "endDate": "2013-01-01",
-            "summary": "",
-            "highlights": [
-                "Awarded 'Volunteer of the Month'"
-            ]
+            "organization": "National Service Scheme, BIT Mesra",
+            "position": "Student Volunteer",
+            "website": "https://www.facebook.com/NSSBITMESRA/",
+            "startDate": "2018-01-01",
+            "endDate": "2020-01-01",
+            "summary": "Was a NSS Student Volunteer.",
+            "highlights": null
         }
     ],
     "education": [
@@ -83,6 +86,7 @@
             "startDate": "2018-07-01",
             "endDate": "2022-04-01",
             "gpa": "7.98",
+            "url": null,
             // "highlights" changed from original "courses" 
             "highlights": [
                 "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
@@ -90,23 +94,30 @@
             ]
         }
     ],
-    // "awards": [
-    //     {
-    //         "title": "Award",
-    //         "date": "2014-11-01",
-    //         "awarder": "Company",
-    //         "summary": "There is no spoon."
-    //     }
-    // ],
-    // "publications": [
-    //     {
-    //         "name": "Publication",
-    //         "publisher": "Company",
-    //         "releaseDate": "2014-10-01",
-    //         "website": "http://publication.com",
-    //         "summary": "Description..."
-    //     }
-    // ],
+    // awards can be taken as achievements
+    "awards": [
+        {
+            "title": "AIR 15,905 in JEE Main 2018",
+            "date": "2018-04-08",
+            "awarder": "JEE",
+            "summary": "Acheived the rank as said"
+        },
+        {
+            "title": "Recieved TATA Steel Millenium Scholarship during 2018-2022",
+            "date": "2018-04-08",
+            "awarder": "Tata Steel",
+            "summary": "Recieved the Scholarship"
+        }
+    ],
+    "publications": [
+        {
+            "name": "Publication",
+            "publisher": "Company",
+            "releaseDate": "2014-10-01",
+            "website": "http://publication.com",
+            "summary": "Description..."
+        }
+    ],
     "skills": [
         {
             "name": "Programmming Languages",
@@ -177,17 +188,57 @@
         {
             "language": "English",
             "fluency": "Native speaker"
+        },
+        {
+            "language": "Hindi",
+            "fluency": "Native speaker"
         }
     ],
-    // "interests": [
-    //     {
-    //         "name": "Wildlife",
-    //         "keywords": [
-    //             "Ferrets",
-    //             "Unicorns"
-    //         ]
-    //     }
-    // ],
+    "projects": [
+        {
+            "name": "Whatsapp DataViz",
+            "description": "Script used to visualize data from whatsapp chats",
+            "highlights": [
+                "Used Python to analyse whatsapp chats and plots were constructed to visualize statistics",
+                "A frontend web interface to create such graphics from chats easily"
+            ],
+            "keywords": [
+                "Python3",
+                "Matplotlib",
+                "NumPy"
+            ],
+            "startDate": "2020-03-01",
+            "endDate": "2020-04-01",
+            "url": "https://github.com/15H44N/Whatsapp-DataViz",
+            "roles": null,
+            "entity": null,
+            "type": "Application"
+        },
+        {
+            "name": "InterviewPrep",
+            "description": "Platform to view DSA Questions and practise them",
+            "highlights": [
+                "This was a group project to create a service to prepare for DSA interviews where I had created two components.",
+                "Developed a containerized code compilation service to enable platform independent moderated compilation",
+                "Created an API used to extract problems from and submit solutions to DSA problems to GFG Practice."
+            ],
+            "keywords": [
+                "Python",
+                "Selenium",
+                "Docker",
+                "Flask"
+            ],
+            "startDate": "2021-03-1",
+            "endDate": "2021-04-1",
+            "url": "https://github.com/15H44N/Compile-API/",
+            "roles": [
+                "DevOps",
+                "Services Engineer"
+            ],
+            "entity": "InterviewPrep",
+            "type": "Service"
+        }
+    ],
     "references": [
         {
             "name": "John Doe",
