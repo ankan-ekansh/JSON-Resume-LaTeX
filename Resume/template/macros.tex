@@ -25,11 +25,11 @@
 % Custom ICONS from PDF files in ../res/icons folder, Syntax same as ProfileLink
 \newcommand{\AltProfileLink}[4]
 % Alt Profile Link with Custom icons, uses (Non Suffixed) \ImageChar
-{\ImageChar{../res/icons/#2.pdf}  \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
+{\ImageChar{\IconPath#2.pdf}  \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
 
 \WithSuffix\newcommand\AltProfileLink*[4]
 % Alt Profile Link* with Custom icons, uses \ImageChar*
-{\ImageChar*{../res/icons/#2.pdf} \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
+{\ImageChar*{\IconPath#2.pdf} \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
 
 \newcommand{\ImageChar}[1] 
 % image as char, non suffixed, scaled to 1em

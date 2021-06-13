@@ -10,15 +10,7 @@
 \usepackage{scalerel} \usepackage{suffix}
 \pagestyle{empty}
 
-\newcommand{\AuthorName}{Ishaan Aditya}
-\newcommand{\postapp}{Machine Learning Engineer}
-\newcommand{\email}{ishaanaditya.v@gmail.com}
-\newcommand{\phone}{916204507435}
-\newcommand{\PhoneFormatted}{(+91) 620 450 7435}
-\newcommand{\university}{Birla Insitute of Technology, Mesra}
-
-\newcommand{\maincolor}{MaterialDeepOrange}
-\newcommand{\seccolor}{MaterialGrey}
+\input{./meta.tex}
 
 % PDF METADATA
 \usepackage[
@@ -28,7 +20,9 @@
     pdfproducer={LaTeX}, pdfcreator={}
 ]{hyperref}
 
-\newcommand{\FontPath}[1]{../resources/fonts/#1/}
+\newcommand{\ResPath}{../../resources}
+\newcommand{\FontPath}[1]{\ResPath/fonts/#1/}
+\newcommand{\IconPath}{\ResPath/icons/}
 % \setsansfont{NeutraText-Book}[Path = \FontPath{Neutra},Extension = .otf]
 
 \setsansfont{Neutraface2Text}[
@@ -46,7 +40,7 @@
     Path = \FontPath{Fira-Code}, Extension = .ttf,
     UprightFont = *-Regular]
 
-\input{./res/macros.tex}
+\input{./macros.tex}
 
 \renewcommand{\maketitle}
 {\begin{center}
@@ -60,6 +54,6 @@
 \begin{document}
 \maketitle
 
-\input{./res/resume_content.tex}
+\input{./content.tex}
 
 \end{document}
