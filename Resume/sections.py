@@ -5,13 +5,18 @@ from typing import List
 import json
 import textwrap
 import logging
+from pathlib import Path
 
 from rich import print
 from rich.syntax import Syntax
 
 
 class MetaData:
-    colors = {"main_color": "MaterialDeepOrange", "sec_color": "MaterialGrey"}
+    colors = {
+        "main_color": "MaterialDeepOrange", 
+        "sec_color": "MaterialGrey",
+        "custom": []
+    }
 
     def __init__(self, data: dict) -> None:
         self.name = data.get("name")
@@ -19,6 +24,7 @@ class MetaData:
         self.email = data.get("email")
         self.phone = data.get("phone")
         self.phone_fmt = data.get("phoneFormat")
+        self.set_colors()
 
     def set_colors(self, colors: dict = None):
         if not colors:
@@ -27,6 +33,11 @@ class MetaData:
         self.main_color = colors["main_color"]
         self.sec_color = colors["sec_color"]
 
+    @staticmethod
+    def add_custom_color_command(color_command: str):
+        MetaData.colors['custom'].append(color_command)
+        
+    
     def to_latex(self):
         if (not self.main_color) and (not self.sec_color):
             self.main_color = MetaData.colors["main_color"]
@@ -42,7 +53,14 @@ class MetaData:
             \\newcommand{\\maincolor}{$main_color}
             \\newcommand{\\seccolor}{$sec_color}
             """
-        template = Template(textwrap.dedent(template_str))
+        
+        template_str = textwrap.dedent(template_str)
+        if len(MetaData.colors['custom']):
+            for command in MetaData.colors['custom']:
+                command_str = f"{command}\n"
+                template_str += command_str
+            
+        template = Template(template_str)
         data = {
             "name": self.name,
             "position": self.position,
@@ -56,6 +74,8 @@ class MetaData:
 
 
 class ProfileLink:
+    social_profs_path = Path("./resources/data/social_profiles.json")
+
     def __init__(self, network: str, username: str, url: str) -> None:
         self.network = network
         self.username = username
@@ -72,7 +92,7 @@ class ProfileLink:
 
     def get_meta(self) -> dict:
         nw = self.network
-        with open("../../resources/data/social_profiles.json", "r") as f:
+        with open(ProfileLink.social_profs_path, "r") as f:
             data = json.load(f)
 
         if nw in data["custom_icons"].keys():
@@ -98,7 +118,6 @@ class ProfileLink:
                 data[k] = meta[k]
 
             template_str = """\
-                ${custom_color_command}
                 $command
                 {$color}
                 {$network}
@@ -107,6 +126,9 @@ class ProfileLink:
                 \\LinkSep
                 %
                 """
+
+            if data.get('custom_color_command'):
+                MetaData.add_custom_color_command(data['custom_color_command'])
 
             template = Template(textwrap.dedent(template_str))
             logging.info(f"Created `ProfileLink` for {self.network}")
@@ -186,14 +208,16 @@ class Education:
         endDate: str = None,
         gpa: str = None,
         highlights: List[str] = None,
+        url: str = None
     ) -> None:
 
-        self.institution = institution
-        self.area = area
+        self.institution = escape_latex(institution)
+        self.area = escape_latex(area)
         self.studyType = studyType
         self.startDate = startDate
         self.endDate = endDate
         self.gpa = gpa
+        self.url = url
         self.highlights = highlights
 
     def parse_dates(self):
@@ -247,7 +271,7 @@ class TechnicalSkills:
         template_str = "\\ItemSkill{$name} $items\n"
         template = Template(template_str)
         data = {
-            "name": self.name,
+            "name": escape_latex(self.name),
             "items": ", ".join([i for i in self.keywords]),
         }
         return template.safe_substitute(data)
@@ -283,11 +307,9 @@ class Project:
             {$start to $end}
             {$url}
             {$keywords}
-            
             \\begin{itemize}
             \t$highlights
             \\end{itemize}
-            \\smallskip
             """
         template = Template(textwrap.dedent(template_str))
 
@@ -314,12 +336,13 @@ class Achievements:
         pass
 
 
-def test():
-    def print_latex_syntax(code: str):
-        syn = Syntax(code, lexer_name="latex", background_color="default")
-        print(syn)
-        print("\n")
+def print_latex_syntax(code: str):
+    syn = Syntax(code, lexer_name="latex", background_color="default")
+    print(syn)
+    # print("\n")
 
+
+def test():
     def test_meta():
         data = {
             "name": "Ishaan Aditya",
@@ -423,7 +446,7 @@ def test():
     # test_education()
     # test_techskills()
     # test_projects()
-    # test_meta()
+    test_meta()
 
 
 if __name__ == "__main__":
