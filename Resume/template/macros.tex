@@ -73,7 +73,7 @@
 % Projects
 \newcommand{\ProjectHead}[4]
 {
-    \noindent\href{#3}{\large \sffamily \color{\MainColorDark}{#1} \hspace{1pt} \color{\MainColorDark}{\faIcon{github}}}
+    \noindent\href{#3}{\large \sffamily \color{\MainColorDark}{#1} \color{\SecColorLight}{\small {\faIcon{external-link-alt}}}}
     \hfill
     {\textsl{\color{\SecColorLight}{#2}}}\\[1pt]
     \color{\SecColorDark}{\textsl{#4}}\normalcolor
@@ -111,5 +111,5 @@
 
 % Achievements Section
 \newenvironment{AchievementList}
-{\begin{multicols}{2}\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=2pt, label={\color{\MainColorDark}{\faTrophy}}]}
-{\end{itemize}\end{multicols}}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=2pt, label={\color{\MainColorDark}{\faTrophy}}]}
+{\end{itemize}}
