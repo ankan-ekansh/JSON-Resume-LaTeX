@@ -255,7 +255,7 @@ class Education:
         return filled
 
 
-class TechnicalSkills:
+class TechnicalSkill:
     def __init__(
         self,
         name: str = None,
@@ -330,11 +330,14 @@ class Project:
         return template.safe_substitute(data)
 
 
-class Achievements:
+class Achievement:
     # TODO :Write this class
-    def __init__(self) -> None:
+    def __init__(self, data:dict) -> None:
+        self.title:str = data.get('title')
         pass
 
+    def to_latex(self):
+        return "\t\\item " + self.title.strip()
 
 def print_latex_syntax(code: str):
     syn = Syntax(code, lexer_name="latex", background_color="default")
@@ -416,7 +419,7 @@ def test():
                 "BeautifulSoup",
             ],
         }
-        ts = TechnicalSkills(**data)
+        ts = TechnicalSkill(**data)
         print_latex_syntax(ts.to_latex())
 
     def test_projects():
