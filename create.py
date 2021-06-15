@@ -1,3 +1,4 @@
+import logging
 import json
 import os
 import subprocess
@@ -10,17 +11,25 @@ import commentjson
 import pylatex
 from rich import print
 from rich.syntax import Syntax
+from rich.console import Console
+from rich.spinner import Spinner
 
 from Resume.sections import (
-    Achievements,
+    Achievement,
     Education,
     Experience,
     MetaData,
     ProfileLink,
     Project,
-    TechnicalSkills,
+    TechnicalSkill,
 )
 
+LOGGING_LEVEL_MAP = {
+    "info": logging.INFO,
+    "warn": logging.WARN,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL
+}
 
 def print_latex_syntax(code: str):
     syn = Syntax(code, lexer_name="latex", background_color="default")
@@ -41,7 +50,14 @@ def parse_json() -> dict:
     return d
 
 
-def create_resume_content(data: dict):
+def create_resume(data: dict):
+    """
+    High Level Function to create Resume .tex and .pdf files from the `json` resume spec passed in. Uses helper functions and submodule classes for actual building of resume tex file
+
+    Args:
+        data (dict): [description]
+    """
+    
     def section_MetaData(data: dict):
         m = MetaData(data["basics"])
         m.set_colors(data["meta"])
@@ -136,7 +152,7 @@ def create_resume_content(data: dict):
         final += end
         return final
 
-    def section_TechnicalSkills(skills: List[dict]):
+    def section_TechnicalSkill(skills: List[dict]):
         beg = """\
             \\section{Technical Skills}
             \\begin{ListSkills}\n
@@ -149,49 +165,85 @@ def create_resume_content(data: dict):
         final = "" + dedent(beg)
 
         for entry in skills:
-            ts = TechnicalSkills(**entry)
+            ts = TechnicalSkill(**entry)
             final += "\t" + ts.to_latex()
 
         final += dedent(end)
         return final
 
-    with open("./tmp/content.tex", "w") as f:
+    def section_Achievements(awards: List[dict]):
+        beg = dedent("""\
+            \\section{Achievements}
+            
+            \\begin{AchievementList}
+        """)
+        
+        end = "\\end{AchievementList}"
+
+        final = "" + beg
+        for item in awards:
+            a = Achievement(item)
+            final += a.to_latex() + "\n"
+        
+        return final + end
+        
+    with open("./tmp/content.tex", "w") as content_file, open("./tmp/meta.tex", "w") as meta_file:
         content = [
             section_ProfileLinks(data["basics"]["profiles"]),
             section_Experience(data["work"]),
             section_Education(data["education"]),
-            section_TechnicalSkills(data["skills"]),
+            section_TechnicalSkill(data["skills"]),
             section_Projects(data["projects"]),
+            section_Achievements(data["awards"])
         ]
-        f.write("".join(content))
-
-    with open("./tmp/meta.tex", "w") as f:
-        f.write(section_MetaData(data))
+        content_file.write("".join(content))
+        meta_file.write(section_MetaData(data))
 
     def build_resume():
-        p = subprocess.run(
-            """\
-                cp Resume/template/macros.tex tmp/macros.tex
-                cp Resume/template/resume.tex tmp/resume.tex
-                cd tmp
-                latexmk -xelatex -quiet resume.tex
-                mv -f resume.pdf ../Resume.pdf
-                latexmk -quiet -C
-                rm *.tex
-                """,
-            shell=True,
-            capture_output=True,
-            text=True,
+        
+        def build_with_system_latex():
+            p = subprocess.run(
+                """\
+                    cp Resume/template/macros.tex tmp/macros.tex
+                    cp Resume/template/resume.tex tmp/resume.tex
+                    cd tmp
+                    latexmk -xelatex -quiet resume.tex
+                    mv -f resume.pdf ../Resume.pdf
+                    latexmk -quiet -C
+                    rm *.tex
+                    """,
+                shell=True,
+                capture_output=True,
+                text=True,
+            )
+            return p
+        
+        docker_proc = subprocess.run(
+            dedent("""\
+                docker run -it --rm \
+                --name resume-latex-build \
+                -v "`pwd`:/home/resume_build/"  -w "/home/resume_build/"  danteev/texlive:latest \
+                bash ./build.sh
+            """), 
+            shell = True, capture_output=True, text=True
         )
-        if p.returncode != 0:
-            print(f"[red]{p.stderr}")
+        
+        if docker_proc.returncode != 0:
+            print(f"[red]{docker_proc.stderr}")
 
     build_resume()
 
 
-def main():
+def main(logging_level:str = "warn"):
+    logging.basicConfig(
+        level=LOGGING_LEVEL_MAP[logging_level],
+        filename="./resume_builder.log",
+        filemode="a",
+        format="%(levelname)s - %(asctime)s - %(message)s",
+        datefmt="%d-%b-%y %H:%M:%S",
+    )
     data = parse_json()
-    create_resume_content(data)
+    create_resume(data)
 
 
 if __name__ == "__main__":
