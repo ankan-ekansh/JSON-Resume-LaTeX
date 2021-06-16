@@ -1,12 +1,12 @@
 {
     "meta": {
         "lastModified": "",
-        "main_color": "MaterialBlue",
+        "main_color": "MaterialOrange",
         "sec_color": "MaterialGrey"
     },
     "basics": {
         "name": "Ishaan Aditya",
-        "label": "Programmer",
+        "label": "MLE",
         "picture": "",
         "email": "ishaanaditya.v@gmail.com",
         "phone": "916204507435",
@@ -52,9 +52,9 @@
             "endDate": "2021-07-16",
             "summary": "",
             "highlights": [
-                "Worked in Analytics (It was NOT Real job)",
-                "Made Spreadsheet, Document & PPT for no reason ",
-                "Wasted Time, Grinded Leetcode Problems by night"
+                "Worked in the Business Intelligence Unit, studying the Growth and Modelling the behavior of NRI Population",
+                "Scraped News articles and used NLP Clustering and Topic Modelling to gather insights about NRI Population in different countries",
+                "Created Supervised ML model to project the population of NRI customers in a country depending on certain World Development Indicators"
             ]
         },
         {
@@ -94,6 +94,7 @@
             "url": null,
             // "highlights" changed from original "courses" 
             "highlights": [
+                "Volunteered at National Service Scheme, BIT Mesra",
                 "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
                 "Served as General Body Member, Dhwani Music Club, BIT Mesra"
             ]
@@ -238,7 +239,7 @@
             "url": "https://github.com/15H44N/Compile-API/",
             "roles": [
                 "DevOps",
-                "Services Engineer"
+                "Backend Engineer"
             ],
             "entity": "InterviewPrep",
             "type": "Service"
