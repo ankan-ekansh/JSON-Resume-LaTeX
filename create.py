@@ -1,5 +1,6 @@
-import logging
+import sys
 import json
+import logging
 import os
 import subprocess
 import textwrap
@@ -10,9 +11,10 @@ from typing import List
 import commentjson
 import pylatex
 from rich import print
-from rich.syntax import Syntax
 from rich.console import Console
 from rich.spinner import Spinner
+from rich.syntax import Syntax
+from pathlib import Path
 
 from Resume.sections import (
     Achievement,
@@ -28,8 +30,9 @@ LOGGING_LEVEL_MAP = {
     "info": logging.INFO,
     "warn": logging.WARN,
     "error": logging.ERROR,
-    "critical": logging.CRITICAL
+    "critical": logging.CRITICAL,
 }
+
 
 def print_latex_syntax(code: str):
     syn = Syntax(code, lexer_name="latex", background_color="default")
@@ -44,8 +47,8 @@ def print_json(data: dict):
     print("\n")
 
 
-def parse_json() -> dict:
-    with open("./resume.jsonc", "r") as f:
+def parse_json(path: Path = "./resume.jsonc") -> dict:
+    with open(path, "r") as f:
         d = commentjson.load(f)
     return d
 
@@ -57,7 +60,7 @@ def create_resume(data: dict):
     Args:
         data (dict): [description]
     """
-    
+
     def section_MetaData(data: dict):
         m = MetaData(data["basics"])
         m.set_colors(data["meta"])
@@ -172,69 +175,40 @@ def create_resume(data: dict):
         return final
 
     def section_Achievements(awards: List[dict]):
-        beg = dedent("""\
+        beg = dedent(
+            """\
             \\section{Achievements}
             
             \\begin{AchievementList}
-        """)
-        
+        """
+        )
+
         end = "\\end{AchievementList}"
 
         final = "" + beg
         for item in awards:
             a = Achievement(item)
             final += a.to_latex() + "\n"
-        
+
         return final + end
-        
-    with open("./tmp/content.tex", "w") as content_file, open("./tmp/meta.tex", "w") as meta_file:
+
+    with open("./tmp/content.tex", "w") as content_file, open(
+        "./tmp/meta.tex", "w"
+    ) as meta_file:
         content = [
             section_ProfileLinks(data["basics"]["profiles"]),
             section_Experience(data["work"]),
             section_Education(data["education"]),
             section_TechnicalSkill(data["skills"]),
             section_Projects(data["projects"]),
-            section_Achievements(data["awards"])
+            section_Achievements(data["awards"]),
         ]
         content_file.write("".join(content))
         meta_file.write(section_MetaData(data))
 
-    def build_resume():
-        
-        def build_with_system_latex():
-            p = subprocess.run(
-                """\
-                    cp Resume/template/macros.tex tmp/macros.tex
-                    cp Resume/template/resume.tex tmp/resume.tex
-                    cd tmp
-                    latexmk -xelatex -quiet resume.tex
-                    mv -f resume.pdf ../Resume.pdf
-                    latexmk -quiet -C
-                    rm *.tex
-                    """,
-                shell=True,
-                capture_output=True,
-                text=True,
-            )
-            return p
-        
-        docker_proc = subprocess.run(
-            dedent("""\
-                docker run -it --rm \
-                --name resume-latex-build \
-                -v "`pwd`:/home/resume_build/"  -w "/home/resume_build/"  danteev/texlive:latest \
-                bash ./build.sh
-            """), 
-            shell = True, capture_output=True, text=True
-        )
-        
-        if docker_proc.returncode != 0:
-            print(f"[red]{docker_proc.stderr}")
 
-    build_resume()
+def main(logging_level: str = "warn"):
 
-
-def main(logging_level:str = "warn"):
     logging.basicConfig(
         level=LOGGING_LEVEL_MAP[logging_level],
         filename="./resume_builder.log",
@@ -242,7 +216,12 @@ def main(logging_level:str = "warn"):
         format="%(levelname)s - %(asctime)s - %(message)s",
         datefmt="%d-%b-%y %H:%M:%S",
     )
-    data = parse_json()
+    args = sys.argv
+    if len(args) > 0:
+        data = parse_json(Path(args[1]))
+    else:
+        data = parse_json()
+
     create_resume(data)
 
 

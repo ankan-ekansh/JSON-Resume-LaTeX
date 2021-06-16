@@ -74,6 +74,8 @@ class MetaData:
 
 
 class ProfileLink:
+    # TODO: Add default configuration for unhandled files
+    # TODO: Proper Log Error Message for Unpresent Icon 
     social_profs_path = Path("./resources/data/social_profiles.json")
 
     def __init__(self, network: str, username: str, url: str) -> None:
@@ -279,7 +281,6 @@ class TechnicalSkill:
 
 class Project:
     _config = {"datefmt": "%b %Y"}
-    # TODO: Write this class
 
     def __init__(self, data: dict) -> None:
         self.name = data.get("name")
@@ -331,7 +332,6 @@ class Project:
 
 
 class Achievement:
-    # TODO :Write this class
     def __init__(self, data:dict) -> None:
         self.title:str = data.get('title')
         pass
@@ -454,7 +454,7 @@ def test():
 
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.WARN,
         filename="./resume_creation.log",
         filemode="a",
         format="%(levelname)s - %(asctime)s - %(message)s",
