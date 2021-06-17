@@ -34,6 +34,6 @@ function run_build() {
     clean_tmp
 }
 
-# used to expand command line calls to funcion names
+# "$@" is used to expand command line calls to funcion names
 # https://stackoverflow.com/a/16159057/13196816
 "$@"

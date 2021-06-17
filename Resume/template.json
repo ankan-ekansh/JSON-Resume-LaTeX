@@ -1,0 +1,37 @@
+{
+  "ProfileLink": {
+    "begin": ["\\vspace{-1em}", "\\begin{center}"],
+    "mid": [null],
+    "end": ["\\end{center}", "\n"]
+  },
+
+  "Experience": {
+    "begin": ["\\section{Professional Experience}", ""],
+    "mid": ["%", "\\vspace{1em}", "%", ""],
+    "end": ["\n"]
+  },
+
+  "Education": {
+    "begin": ["\\section{Education}", ""],
+    "mid": ["%", "\\vspace{1em}", "%", ""],
+    "end": ["\n"]
+  },
+
+  "Project": {
+    "begin": ["\\section{Projects}", ""],
+    "mid": ["\\smallskip", ""],
+    "end": ["\n"]
+  },
+
+  "TechnicalSkill": {
+    "begin": ["\\section{Technical Skills}", "\\begin{ListSkills}", "\n"],
+    "mid": [null],
+    "end": ["\\end{ListSkills}", "\n"]
+  },
+
+  "Achievement": {
+    "begin": ["\\section{Achievements}", "", "\\begin{AchievementList}", ""],
+    "mid": [null],
+    "end": ["\\end{AchievementList}", "\n"]
+  }
+}

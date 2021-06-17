@@ -4,9 +4,9 @@ import logging
 import os
 import subprocess
 import textwrap
-from re import sub
+from re import sub, template
 from textwrap import dedent, indent
-from typing import List
+from typing import Iterable, List, Tuple
 
 import commentjson
 import pylatex
@@ -60,20 +60,32 @@ def create_resume(data: dict):
     Args:
         data (dict): [description]
     """
+    templates_path = Path("./Resume/template.json")
+    
+    def get_template(key: str, file: Path) -> Tuple[str]:
+        with open(file, "r") as f:
+            data: dict = json.load(f)
+
+        def join(x: Iterable[str]):
+            return "" if x[0] is None else "\n".join(x)
+
+        if data.get(key):
+            vals = data.get(key)
+            begin, mid, end = map(
+                join, (vals.get("begin"), vals.get("mid"), vals.get("end"))
+            )
+            return (begin, mid, end)
+
+        else:
+            return (None, None, None)
 
     def section_MetaData(data: dict):
         m = MetaData(data["basics"])
         m.set_colors(data["meta"])
-        # print(m.to_latex())
         return m.to_latex()
 
     def section_ProfileLinks(profiles: List[dict]):
-        beg = """\
-            \\vspace{-1em}
-            \\begin{center}
-        """
-        end = "\\end{center}\n"
-
+        beg, mid, end = get_template('ProfileLink', templates_path)
         profiles_tex = []
         for prof in profiles:
             p = ProfileLink(**prof)
@@ -83,19 +95,7 @@ def create_resume(data: dict):
         return final
 
     def section_Experience(work: List[dict]):
-        beg = """\
-            \\section{Professional Experience}\n
-            """
-
-        mid = """\
-            %
-            \\vspace{1em}
-            %
-            """
-
-        end = "\n"
-
-        beg, mid = dedent(beg), dedent(mid)
+        beg, mid, end = get_template('Experience', templates_path)
         final = "" + beg
 
         for idx, work_entry in enumerate(work):
@@ -104,23 +104,10 @@ def create_resume(data: dict):
             if idx != len(work) - 1:
                 final += mid
 
-        final += end
-        return final
+        return final + end
 
     def section_Education(education: List[dict]):
-        beg = """\
-            \\section{Education}\n
-            """
-
-        mid = """\
-            %
-            \\vspace{1em}
-            %
-            """
-
-        end = "\n"
-
-        beg, mid = dedent(beg), dedent(mid)
+        beg, mid, end = get_template('Education', templates_path)
         final = "" + beg
 
         for idx, entry in enumerate(education):
@@ -129,21 +116,10 @@ def create_resume(data: dict):
             if idx != len(education) - 1:
                 final += mid
 
-        final += end
-        return final
+        return final + end
 
     def section_Projects(projects: List[dict]):
-        beg = """\
-            \\section{Projects}\n
-            """
-
-        mid = """\
-            \\smallskip\n
-            """
-
-        end = "\n"
-
-        beg, mid = dedent(beg), dedent(mid)
+        beg, mid, end = get_template('Project', templates_path)
         final = "" + beg
 
         for idx, entry in enumerate(projects):
@@ -152,39 +128,20 @@ def create_resume(data: dict):
             if idx != len(projects) - 1:
                 final += mid
 
-        final += end
-        return final
+        return final + end
 
     def section_TechnicalSkill(skills: List[dict]):
-        beg = """\
-            \\section{Technical Skills}
-            \\begin{ListSkills}\n
-            """
-
-        end = """\
-            \\end{ListSkills}
-            """
-
-        final = "" + dedent(beg)
+        beg, mid, end = get_template('TechnicalSkill', templates_path)
+        final = "" + beg
 
         for entry in skills:
             ts = TechnicalSkill(**entry)
             final += "\t" + ts.to_latex()
 
-        final += dedent(end)
-        return final
+        return final + end
 
     def section_Achievements(awards: List[dict]):
-        beg = dedent(
-            """\
-            \\section{Achievements}
-            
-            \\begin{AchievementList}
-        """
-        )
-
-        end = "\\end{AchievementList}"
-
+        beg, mid, end = get_template('Achievement', templates_path)
         final = "" + beg
         for item in awards:
             a = Achievement(item)

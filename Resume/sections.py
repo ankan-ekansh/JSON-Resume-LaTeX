@@ -13,9 +13,9 @@ from rich.syntax import Syntax
 
 class MetaData:
     colors = {
-        "main_color": "MaterialDeepOrange", 
+        "main_color": "MaterialDeepOrange",
         "sec_color": "MaterialGrey",
-        "custom": []
+        "custom": [],
     }
 
     def __init__(self, data: dict) -> None:
@@ -35,9 +35,8 @@ class MetaData:
 
     @staticmethod
     def add_custom_color_command(color_command: str):
-        MetaData.colors['custom'].append(color_command)
-        
-    
+        MetaData.colors["custom"].append(color_command)
+
     def to_latex(self):
         if (not self.main_color) and (not self.sec_color):
             self.main_color = MetaData.colors["main_color"]
@@ -53,13 +52,13 @@ class MetaData:
             \\newcommand{\\maincolor}{$main_color}
             \\newcommand{\\seccolor}{$sec_color}
             """
-        
+
         template_str = textwrap.dedent(template_str)
-        if len(MetaData.colors['custom']):
-            for command in MetaData.colors['custom']:
+        if len(MetaData.colors["custom"]):
+            for command in MetaData.colors["custom"]:
                 command_str = f"{command}\n"
                 template_str += command_str
-            
+
         template = Template(template_str)
         data = {
             "name": self.name,
@@ -75,11 +74,12 @@ class MetaData:
 
 class ProfileLink:
     # TODO: Add default configuration for unhandled files
-    # TODO: Proper Log Error Message for Unpresent Icon 
+    # TODO: Proper Log Error Message for Unpresent Icon
     social_profs_path = Path("./resources/data/social_profiles.json")
+    default_meta = {"color": "MaterialGrey700", "command": "\\ProfileLink"}
 
     def __init__(self, network: str, username: str, url: str) -> None:
-        self.network = network
+        self.network = network.lower()
         self.username = username
         self.url = url
         self.data = {  # schema defined here
@@ -103,10 +103,13 @@ class ProfileLink:
 
         elif nw in data["fontawesome"].keys():
             meta = data["fontawesome"][nw]
+            if not meta:
+                return ProfileLink.default_meta
+            
             return meta
-
+            
         else:
-            pass
+            raise KeyError(f"Icon for `{self.network}` not found in LaTeX FontAwesome or Custom Database")
 
     def to_latex(self) -> str:
         meta = self.get_meta()
@@ -129,8 +132,8 @@ class ProfileLink:
                 %
                 """
 
-            if data.get('custom_color_command'):
-                MetaData.add_custom_color_command(data['custom_color_command'])
+            if data.get("custom_color_command"):
+                MetaData.add_custom_color_command(data["custom_color_command"])
 
             template = Template(textwrap.dedent(template_str))
             logging.info(f"Created `ProfileLink` for {self.network}")
@@ -210,7 +213,7 @@ class Education:
         endDate: str = None,
         gpa: str = None,
         highlights: List[str] = None,
-        url: str = None
+        url: str = None,
     ) -> None:
 
         self.institution = escape_latex(institution)
@@ -332,12 +335,13 @@ class Project:
 
 
 class Achievement:
-    def __init__(self, data:dict) -> None:
-        self.title:str = data.get('title')
+    def __init__(self, data: dict) -> None:
+        self.title: str = data.get("title")
         pass
 
     def to_latex(self):
         return "\t\\item " + self.title.strip()
+
 
 def print_latex_syntax(code: str):
     syn = Syntax(code, lexer_name="latex", background_color="default")
