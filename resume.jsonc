@@ -1,249 +1,203 @@
 {
-    "meta": {
-        "lastModified": "",
-        "main_color": "MaterialOrange",
-        "sec_color": "MaterialGrey"
+  "meta": {
+    "lastModified": "2021-06-20 13:01:12",
+    "main_color": "MaterialOrange",
+    "sec_color": "MaterialGrey"
+  },
+  "basics": {
+    "name": "Ishaan Aditya",
+    "label": "Machine Learning Engineer",
+    "picture": "",
+    "email": "ishaanaditya.v@gmail.com",
+    "phone": "916204507435",
+    "phoneFormat": "(+91) 620 450 7435", // custom
+    "website": null,
+    "summary": "I am a good engineer. I hope",
+    "location": {
+      "address": "A3 Tata Officers' Colony, Dhanbad",
+      "postalCode": "828301",
+      "city": "Dhanbad",
+      "countryCode": "IN",
+      "region": "Jharkhand"
     },
-    "basics": {
-        "name": "Ishaan Aditya",
-        "label": "MLE",
-        "picture": "",
-        "email": "ishaanaditya.v@gmail.com",
-        "phone": "916204507435",
-        "phoneFormat": "(+91) 620 450 7435",
-        "website": null,
-        "summary": "I am a good engineer. I hope",
-        "location": {
-            "address": "A3 Tata Officers' Colony, Dhanbad",
-            "postalCode": "828301",
-            "city": "Dhanbad",
-            "countryCode": "IN",
-            "region": "Jharkhand"
-        },
-        "profiles": [
-            {
-                "network": "github",
-                "username": "15H44N",
-                "url": "http://www.github.com/15H44N"
-            },
-            {
-                "network": "kaggle",
-                "username": "ishaanaditya",
-                "url": "https://www.kaggle.com/ishaanaditya"
-            },
-            {
-                "network": "linkedin",
-                "username": "ishaan-aditya",
-                "url": "https://www.linkedin.com/in/ishaan-aditya"
-            }
-        ]
-    },
-    "work": [
-        {
-            "company": "Axis Bank",
-            "position": "Summer Intern",
-            "website": "https://axisbank.com",
-            "startDate": "2021-05-24",
-            "endDate": "2021-07-16",
-            "summary": "",
-            "highlights": [
-                "Worked in the Business Intelligence Unit, studying the Growth and Modelling the behavior of NRI Population",
-                "Scraped News articles and used NLP Clustering and Topic Modelling to gather insights about NRI Population in different countries",
-                "Created Supervised ML model to project the population of NRI customers in a country depending on certain World Development Indicators"
-            ]
-        },
-        {
-            "company": "Indian Institute of Technology ISM Dhanbad",
-            "position": "Data Analyst Intern",
-            "website": null,
-            "startDate": "2020-09-05",
-            "endDate": "2020-11-24",
-            "summary": "",
-            "highlights": [
-                "I was mentored by Dr. V.M.S.R. Murthy, IIT-ISM Dhanbad and also Mr. G. Gopinath, Scientist at the NIRM, Bengaluru.",
-                "Created and ensembled ML & DL Models for different sparse distributions of a tabular dataset.",
-                "Used CTGAN and CopulaGAN models to  create a synthetic dataset for better training data",
-                "Writing a research paper on the findings of the same with Mr. Gopinath"
-            ]
-        }
-    ],
-    "volunteer": [
-        {
-            "organization": "National Service Scheme, BIT Mesra",
-            "position": "Student Volunteer",
-            "website": "https://www.facebook.com/NSSBITMESRA/",
-            "startDate": "2018-01-01",
-            "endDate": "2020-01-01",
-            "summary": "Was a NSS Student Volunteer.",
-            "highlights": null
-        }
-    ],
-    "education": [
-        {
-            "institution": "Birla Institue of Technology, Mesra",
-            "area": "Electronics & Communication Engineering",
-            "studyType": "Bachelor of Technology (ECE)",
-            "startDate": "2018-07-01",
-            "endDate": "2022-04-01",
-            "gpa": "7.98",
-            "url": null,
-            // "highlights" changed from original "courses" 
-            "highlights": [
-                "Volunteered at National Service Scheme, BIT Mesra",
-                "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
-                "Served as General Body Member, Dhwani Music Club, BIT Mesra"
-            ]
-        }
-    ],
-    // awards can be taken as achievements
-    "awards": [
-        {
-            "title": "AIR 15,905 in JEE Main 2018",
-            "date": "2018-04-08",
-            "awarder": "JEE",
-            "summary": "Acheived the rank as said"
-        },
-        {
-            "title": "Recieved TATA Steel Millenium Scholarship during 2018-2022",
-            "date": "2018-04-08",
-            "awarder": "Tata Steel",
-            "summary": "Recieved the Scholarship"
-        }
-    ],
-    "publications": [
-        {
-            "name": "Publication",
-            "publisher": "Company",
-            "releaseDate": "2014-10-01",
-            "website": "http://publication.com",
-            "summary": "Description..."
-        }
-    ],
-    "skills": [
-        {
-            "name": "Programmming Languages",
-            "level": "Noob",
-            "keywords": [
-                "Python",
-                "C++",
-                "Bash"
-            ]
-        },
-        {
-            "name": "Libraries & Frameworks",
-            "level": "Noob",
-            "keywords": [
-                "Tensorflow",
-                "PyTorch",
-                "Selenium",
-                "SKLearn",
-                "Plotly",
-                "FastAPI",
-                "Pandas",
-                "BeautifulSoup"
-            ]
-        },
-        {
-            "name": "Tools & Technology",
-            "level": "Noob",
-            "keywords": [
-                "\\LaTeX",
-                "Git",
-                "Office",
-                "Jupyter"
-            ]
-        },
-        {
-            "name": "AIOps & Cloud",
-            "level": "Noob",
-            "keywords": [
-                "Docker",
-                "Linux",
-                "AWS",
-                "Heroku"
-            ]
-        },
-        {
-            "name": "Machine Learning",
-            "level": "Noob",
-            "keywords": [
-                "Deep Learning",
-                "NLP",
-                "Object Detection",
-                "GANs"
-            ]
-        },
-        {
-            "name": "Web Technology",
-            "level": "Noob",
-            "keywords": [
-                "NoSQL",
-                "MongoDB",
-                "REST",
-                "Apache Spark",
-                "Nginx"
-            ]
-        }
-    ],
-    "languages": [
-        {
-            "language": "English",
-            "fluency": "Native speaker"
-        },
-        {
-            "language": "Hindi",
-            "fluency": "Native speaker"
-        }
-    ],
-    "projects": [
-        {
-            "name": "Whatsapp DataViz",
-            "description": "Script used to visualize data from whatsapp chats",
-            "highlights": [
-                "Used Python to analyse whatsapp chats and plots were constructed to visualize statistics",
-                "A frontend web interface to create such graphics from chats easily"
-            ],
-            "keywords": [
-                "Python3",
-                "Matplotlib",
-                "NumPy"
-            ],
-            "startDate": "2020-03-01",
-            "endDate": "2020-04-01",
-            "url": "https://github.com/15H44N/Whatsapp-DataViz",
-            "roles": null,
-            "entity": null,
-            "type": "Application"
-        },
-        {
-            "name": "InterviewPrep",
-            "description": "Platform to view DSA Questions and practise them",
-            "highlights": [
-                "This was a group project to create a service to prepare for DSA interviews where I had created two components.",
-                "Developed a containerized code compilation service to enable platform independent moderated compilation",
-                "Created an API used to extract problems from and submit solutions to DSA problems to GFG Practice."
-            ],
-            "keywords": [
-                "Python",
-                "Selenium",
-                "Docker",
-                "Flask"
-            ],
-            "startDate": "2021-03-1",
-            "endDate": "2021-04-1",
-            "url": "https://github.com/15H44N/Compile-API/",
-            "roles": [
-                "DevOps",
-                "Backend Engineer"
-            ],
-            "entity": "InterviewPrep",
-            "type": "Service"
-        }
-    ],
-    "references": [
-        {
-            "name": "John Doe",
-            "reference": "Reference"
-        }
+    "profiles": [
+      {
+        "network": "github",
+        "username": "15H44N",
+        "url": "http://www.github.com/15H44N"
+      },
+      {
+        "network": "kaggle",
+        "username": "ishaanaditya",
+        "url": "https://www.kaggle.com/ishaanaditya"
+      },
+      {
+        "network": "linkedin",
+        "username": "ishaan-aditya",
+        "url": "https://www.linkedin.com/in/ishaan-aditya"
+      }
     ]
+  },
+  "work": [
+    {
+      "company": "Axis Bank",
+      "position": "Summer Intern",
+      "website": "https://www.axisbank.com",
+      "startDate": "2021-05-24",
+      "endDate": "2021-07-16",
+      "summary": "",
+      "highlights": [
+        "Worked in the Business Intelligence Unit, studying the Growth and Modelling the behavior of NRI Population",
+        "Scraped News Articles and used NLP Clustering and Topic Modelling to gather insights about NRI Population in different countries",
+        "Created Supervised ML model to project the population of NRI customers in a country depending on certain World Development Indicators"
+      ]
+    },
+    {
+      "company": "Indian Institute of Technology ISM Dhanbad",
+      "position": "Data Analyst Intern",
+      "website": "https://www.iitism.ac.in/",
+      "startDate": "2020-09-05",
+      "endDate": "2020-11-24",
+      "summary": "",
+      "highlights": [
+        "I was mentored by Dr. V.M.S.R. Murthy, IIT-ISM Dhanbad and also Mr. G. Gopinath, Scientist at the NIRM, Bengaluru.",
+        "Created and ensembled ML & DL Models for different sparse distributions of a tabular dataset.",
+        "Used CTGAN and CopulaGAN models to  create a synthetic dataset for better training data",
+        "Writing a research paper on the findings of the same with Mr. Gopinath"
+      ]
+    }
+  ],
+  "volunteer": [
+    {
+      "organization": "National Service Scheme, BIT Mesra",
+      "position": "Student Volunteer",
+      "website": "https://www.facebook.com/NSSBITMESRA/",
+      "startDate": "2018-01-01",
+      "endDate": "2020-01-01",
+      "summary": "Was a NSS Student Volunteer.",
+      "highlights": null
+    }
+  ],
+  "education": [
+    {
+      "institution": "Birla Institue of Technology, Mesra",
+      "area": "Electronics & Communication Engineering",
+      "studyType": "Bachelor of Technology (ECE)",
+      "startDate": "2018-07-01",
+      "endDate": "2022-04-01",
+      "gpa": "7.98",
+      "url": "https://www.bitmesra.ac.in/",
+      // "highlights" changed from original "courses"
+      "highlights": [
+        "Volunteered at National Service Scheme, BIT Mesra",
+        "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
+        "Served as General Body Member, Dhwani Music Club, BIT Mesra"
+      ]
+    }
+  ],
+  // awards can be taken as achievements
+  "awards": [
+    {
+      "title": "AIR 15,905 in JEE Main 2018",
+      "date": "2018-04-08",
+      "awarder": "JEE",
+      "summary": "Acheived the rank as said"
+    },
+    {
+      "title": "Recieved TATA Steel Millenium Scholarship during 2018-2022",
+      "date": "2018-04-08",
+      "awarder": "Tata Steel",
+      "summary": "Recieved the Scholarship"
+    }
+  ],
+  "publications": [
+    {
+      "name": "Publication",
+      "publisher": "Company",
+      "releaseDate": "2014-10-01",
+      "website": "http://publication.com",
+      "summary": "Description..."
+    }
+  ],
+  "skills": [
+    {
+      "name": "Programmming Languages",
+      "level": "Noob",
+      "keywords": ["Python", "C++", "Bash"]
+    },
+    {
+      "name": "Libraries & Frameworks",
+      "level": "Noob",
+      "keywords": ["Tensorflow", "PyTorch", "Pandas", "SKLearn", "Plotly"]
+    },
+    {
+      "name": "Tools & Technology",
+      "level": "Noob",
+      "keywords": ["\\LaTeX", "Git", "Office", "Jupyter"]
+    },
+    {
+      "name": "AIOps & Cloud",
+      "level": "Noob",
+      "keywords": ["Docker", "Linux", "AWS", "Heroku"]
+    },
+    {
+      "name": "Machine Learning",
+      "level": "Noob",
+      "keywords": ["Deep Learning", "NLP", "Object Detection", "GANs"]
+    },
+    {
+      "name": "Web Technology",
+      "level": "Noob",
+      "keywords": ["NoSQL", "MongoDB", "REST", "Spark", "Nginx", "Selenium"]
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Native speaker"
+    },
+    {
+      "language": "Hindi",
+      "fluency": "Native speaker"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Whatsapp DataViz",
+      "description": "Script used to visualize data from whatsapp chats",
+      "highlights": [
+        "Used Python to analyse whatsapp chats and plots were constructed to visualize statistics",
+        "A frontend web interface to create such graphics from chats easily"
+      ],
+      "keywords": ["Python3", "Matplotlib", "NumPy"],
+      "startDate": "2020-03-01",
+      "endDate": "2020-04-01",
+      "url": "https://github.com/15H44N/Whatsapp-DataViz",
+      "roles": null,
+      "entity": null,
+      "type": "Application"
+    },
+    {
+      "name": "InterviewPrep",
+      "description": "Platform to view DSA Questions and practise them",
+      "highlights": [
+        "This was a group project to create a service to prepare for DSA interviews where I had created two components.",
+        "Developed a containerized code compilation service to enable platform independent moderated compilation",
+        "Created an API used to extract problems from and submit solutions to DSA problems to GFG Practice."
+      ],
+      "keywords": ["Python", "Selenium", "Docker", "Flask"],
+      "startDate": "2021-03-1",
+      "endDate": "2021-04-1",
+      "url": "https://github.com/15H44N/Compile-API/",
+      "roles": ["DevOps", "Backend Engineer"],
+      "entity": "InterviewPrep",
+      "type": "Service"
+    }
+  ],
+  "references": [
+    {
+      "name": "John Doe",
+      "reference": "Reference"
+    }
+  ]
 }
