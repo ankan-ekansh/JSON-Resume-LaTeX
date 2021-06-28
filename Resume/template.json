@@ -19,7 +19,7 @@
 
   "Project": {
     "begin": ["\\section{Projects}", ""],
-    "mid": ["\\smallskip", ""],
+    "mid": ["%", "\\vspace{1em}", "%", ""],
     "end": ["\n"]
   },
 
