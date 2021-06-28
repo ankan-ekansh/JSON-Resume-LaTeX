@@ -10,6 +10,11 @@ from pathlib import Path
 from rich import print
 from rich.syntax import Syntax
 
+EMPTY_ITEMIZE = textwrap.dedent("""\
+    \\begin{itemize}[nosep]\item[]
+    \\end{itemize}
+    """)
+
 
 class MetaData:
     colors = {
@@ -80,7 +85,7 @@ class ProfileLink:
 
     def __init__(self, network: str, username: str, url: str) -> None:
         self.network = network.lower()
-        self.username = username
+        self.username = escape_latex(username)
         self.url = url
         self.data = {  # schema defined here
             "username": self.username,
@@ -105,11 +110,13 @@ class ProfileLink:
             meta = data["fontawesome"][nw]
             if not meta:
                 return ProfileLink.default_meta
-            
+
             return meta
-            
+
         else:
-            raise KeyError(f"Icon for `{self.network}` not found in LaTeX FontAwesome or Custom Database")
+            raise KeyError(
+                f"Icon for `{self.network}` not found in LaTeX FontAwesome or Custom Database"
+            )
 
     def to_latex(self) -> str:
         meta = self.get_meta()
@@ -180,9 +187,6 @@ class Experience:
             {$position}
             {$start to $end}
             {$work_place}
-            \\begin{itemize}
-            \t$highlights  
-            \\end{itemize}
             """
         template = Template(textwrap.dedent(template_str))
         data = {
@@ -190,13 +194,25 @@ class Experience:
             "start": self.start.strftime(config["datefmt"]),
             "end": self.end.strftime(config["datefmt"]),
             "work_place": work_place,
-            "highlights": "\n\t".join(
-                [f"\\item {escape_latex(i)}" for i in self.highlights]
-            ),
         }
-
         filled = template.safe_substitute(data)
-        return filled
+
+        if len(self.highlights):
+            highlights_str = """\
+                \\begin{itemize}
+                \t$highlights  
+                \\end{itemize}
+                """
+            highlights_template = Template(textwrap.dedent(highlights_str))
+            filled += highlights_template.safe_substitute({
+                "highlights": "\n\t".join(
+                    [f"\\item {escape_latex(i)}" for i in self.highlights]
+                ),
+            })
+            
+            return filled
+            
+        return filled + "\n"
 
 
 class Education:
@@ -212,6 +228,7 @@ class Education:
         startDate: str = None,
         endDate: str = None,
         gpa: str = None,
+        summary: str = None,
         highlights: List[str] = None,
         url: str = None,
     ) -> None:
@@ -223,6 +240,7 @@ class Education:
         self.endDate = endDate
         self.gpa = gpa
         self.url = url
+        self.summary = escape_latex(summary)
         self.highlights = highlights
 
     def parse_dates(self):
@@ -238,11 +256,9 @@ class Education:
             {$studyType}
             {$start to $end}
             {$institution}
-            ${studyType} in $area with GPA \\textbf{${gpa}}.
-            \\begin{itemize}
-            \t$highlights
-            \\end{itemize}
+            ${summary}.
             """
+        
         template = Template(textwrap.dedent(template_str))
         data = {
             "studyType": self.studyType,
@@ -251,14 +267,26 @@ class Education:
             "start": self.start.strftime(config["datefmt"]),
             "end": self.end.strftime(config["datefmt"]),
             "institution": self.institution,
-            "highlights": "\n\t".join(
-                [f"\\item {escape_latex(i)}" for i in self.highlights]
-            ),
+            "summary": self.summary
         }
-
         filled = template.safe_substitute(data)
-        return filled
+        
+        if len(self.highlights):
+            highlights_str = """\
+                \\begin{itemize}
+                \t$highlights  
+                \\end{itemize}
+                """
+            highlights_template = Template(textwrap.dedent(highlights_str))
+            filled += highlights_template.safe_substitute({
+                "highlights": "\n\t".join(
+                    [f"\\item {escape_latex(i)}" for i in self.highlights]
+                ),
+            })
+            return filled
 
+        
+        return filled + EMPTY_ITEMIZE
 
 class TechnicalSkill:
     def __init__(
@@ -286,8 +314,8 @@ class Project:
     _config = {"datefmt": "%b %Y"}
 
     def __init__(self, data: dict) -> None:
-        self.name = data.get("name")
-        self.description = data.get("description")
+        self.name = escape_latex(data.get("name"))
+        self.description = escape_latex(data.get("description"))
         self.highlights: List[str] = data.get("highlights")
         self.keywords = data.get("keywords")
         self.startDate = data.get("startDate")
