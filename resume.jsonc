@@ -1,7 +1,7 @@
 {
   "meta": {
-    "lastModified": "2021-06-20 13:01:12",
-    "main_color": "MaterialOrange",
+    "lastModified": "2021-06-29",
+    "main_color": "MaterialBlue",
     "sec_color": "MaterialGrey",
     "order": ["experience", "education", "technical_skill", "project", "achievement" ]
   },
