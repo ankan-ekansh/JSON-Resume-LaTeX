@@ -2,7 +2,8 @@
   "meta": {
     "lastModified": "2021-06-20 13:01:12",
     "main_color": "MaterialOrange",
-    "sec_color": "MaterialGrey"
+    "sec_color": "MaterialGrey",
+    "order": ["experience", "education", "technical_skill", "project", "achievement" ]
   },
   "basics": {
     "name": "Ishaan Aditya",
@@ -87,7 +88,7 @@
       "endDate": "2022-04-01",
       "gpa": "7.98",
       "url": "https://www.bitmesra.ac.in/",
-      // "highlights" changed from original "courses"
+      "summary": "Bachelor of Technology in Electronics & Communication Engineering with GPA of 7.98",
       "highlights": [
         "Volunteered at National Service Scheme, BIT Mesra",
         "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
@@ -95,7 +96,6 @@
       ]
     }
   ],
-  // awards can be taken as achievements
   "awards": [
     {
       "title": "AIR 15,905 in JEE Main 2018",
