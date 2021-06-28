@@ -53,7 +53,7 @@ def parse_json(path: Path = "./resume.jsonc") -> dict:
     return d
 
 
-def create_resume(data: dict):
+def create_resume(data: dict,):
     """
     High Level Function to create Resume .tex and .pdf files from the `json` resume spec passed in. Uses helper functions and submodule classes for actual building of resume tex file
 
@@ -61,7 +61,7 @@ def create_resume(data: dict):
         data (dict): [description]
     """
     templates_path = Path("./Resume/template.json")
-    
+
     def get_template(key: str, file: Path) -> Tuple[str]:
         with open(file, "r") as f:
             data: dict = json.load(f)
@@ -85,7 +85,7 @@ def create_resume(data: dict):
         return m.to_latex()
 
     def section_ProfileLinks(profiles: List[dict]):
-        beg, mid, end = get_template('ProfileLink', templates_path)
+        beg, mid, end = get_template("ProfileLink", templates_path)
         profiles_tex = []
         for prof in profiles:
             p = ProfileLink(**prof)
@@ -95,7 +95,7 @@ def create_resume(data: dict):
         return final
 
     def section_Experience(work: List[dict]):
-        beg, mid, end = get_template('Experience', templates_path)
+        beg, mid, end = get_template("Experience", templates_path)
         final = "" + beg
 
         for idx, work_entry in enumerate(work):
@@ -107,7 +107,7 @@ def create_resume(data: dict):
         return final + end
 
     def section_Education(education: List[dict]):
-        beg, mid, end = get_template('Education', templates_path)
+        beg, mid, end = get_template("Education", templates_path)
         final = "" + beg
 
         for idx, entry in enumerate(education):
@@ -119,7 +119,7 @@ def create_resume(data: dict):
         return final + end
 
     def section_Projects(projects: List[dict]):
-        beg, mid, end = get_template('Project', templates_path)
+        beg, mid, end = get_template("Project", templates_path)
         final = "" + beg
 
         for idx, entry in enumerate(projects):
@@ -131,7 +131,7 @@ def create_resume(data: dict):
         return final + end
 
     def section_TechnicalSkill(skills: List[dict]):
-        beg, mid, end = get_template('TechnicalSkill', templates_path)
+        beg, mid, end = get_template("TechnicalSkill", templates_path)
         final = "" + beg
 
         for entry in skills:
@@ -141,7 +141,7 @@ def create_resume(data: dict):
         return final + end
 
     def section_Achievements(awards: List[dict]):
-        beg, mid, end = get_template('Achievement', templates_path)
+        beg, mid, end = get_template("Achievement", templates_path)
         final = "" + beg
         for item in awards:
             a = Achievement(item)
@@ -149,17 +149,28 @@ def create_resume(data: dict):
 
         return final + end
 
+    def get_order(data: dict) -> List[str]:
+        if data.get('meta'):
+            if data['meta'].get('order'):
+                return data['meta'].get('order')
+        return None
+    
+    sections_mapping = {
+        "experience": section_Experience(data["work"]),
+        "education": section_Education(data["education"]),
+        "technical_skill": section_TechnicalSkill(data["skills"]),
+        "project": section_Projects(data["projects"]),
+        "achievement": section_Achievements(data["awards"]),
+    }
+
     with open("./tmp/content.tex", "w") as content_file, open(
         "./tmp/meta.tex", "w"
     ) as meta_file:
-        content = [
-            section_ProfileLinks(data["basics"]["profiles"]),
-            section_Experience(data["work"]),
-            section_Education(data["education"]),
-            section_TechnicalSkill(data["skills"]),
-            section_Projects(data["projects"]),
-            section_Achievements(data["awards"]),
-        ]
+
+        order = get_order(data)
+        content = [section_ProfileLinks(data["basics"]["profiles"])]
+        content += [sections_mapping[k] for k in order]
+
         content_file.write("".join(content))
         meta_file.write(section_MetaData(data))
 
