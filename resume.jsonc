@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastModified": "2021-06-29",
+    "lastModified": "2021-07-27",
     "main_color": "MaterialBlue",
     "sec_color": "MaterialGrey",
     "order": ["experience", "education", "technical_skill", "project", "achievement" ]
@@ -48,9 +48,9 @@
       "endDate": "2021-07-16",
       "summary": "",
       "highlights": [
-        "Worked in the Business Intelligence Unit, studying the Growth and Modelling the behavior of NRI Population",
-        "Scraped News Articles and used NLP Clustering and Topic Modelling to gather insights about NRI Population in different countries",
-        "Created Supervised ML model to project the population of NRI customers in a country depending on certain World Development Indicators"
+        "Worked in the Deposit Analytics vertical of Business Intelligence Unit, researching the growth & behavior of NRI banking customers",
+        "Collected and processed NRI Population & Remittance data from different sources to model time-series growth in NRI finance market of different countries.",
+        "Scraped News articles & tweets and used NLP based Clustering, Topic modelling and Sentiment analysis pipelines to gather actionable insights about NRI banking customers and different banking entitites",
       ]
     },
     {
@@ -64,7 +64,6 @@
         "I was mentored by Dr. V.M.S.R. Murthy, IIT-ISM Dhanbad and also Mr. G. Gopinath, Scientist at the NIRM, Bengaluru.",
         "Created and ensembled ML & DL Models for different sparse distributions of a tabular dataset.",
         "Used CTGAN and CopulaGAN models to  create a synthetic dataset for better training data",
-        "Writing a research paper on the findings of the same with Mr. Gopinath"
       ]
     }
   ],
@@ -86,9 +85,9 @@
       "studyType": "Bachelor of Technology (ECE)",
       "startDate": "2018-07-01",
       "endDate": "2022-04-01",
-      "gpa": "7.98",
+      "gpa": "8.11",
       "url": "https://www.bitmesra.ac.in/",
-      "summary": "Bachelor of Technology in Electronics & Communication Engineering with GPA of 7.98",
+      "summary": "Bachelor of Technology in Electronics & Communication Engineering with OGPA of 8.11",
       "highlights": [
         "Volunteered at National Service Scheme, BIT Mesra",
         "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
@@ -148,7 +147,7 @@
     {
       "name": "Web Technology",
       "level": "Noob",
-      "keywords": ["NoSQL", "MongoDB", "REST", "Spark", "Nginx", "Selenium"]
+      "keywords": ["NoSQL", "REST APIs", "Spark", "Nginx", "Selenium"]
     }
   ],
   "languages": [
