@@ -1,20 +1,19 @@
-from pylatex import escape_latex
+import json
+import logging
+import textwrap
+from typing import List
+from pathlib import Path
 from string import Template
 from datetime import datetime
-from typing import List
-import json
-import textwrap
-import logging
-from pathlib import Path
+from pylatex import escape_latex
+from config import *
 
-from rich import print
-from rich.syntax import Syntax
-
-EMPTY_ITEMIZE = textwrap.dedent("""\
+EMPTY_ITEMIZE = textwrap.dedent(
+    """\
     \\begin{itemize}[nosep]\item[]
     \\end{itemize}
-    """)
-
+    """
+)
 
 class MetaData:
     colors = {
@@ -80,7 +79,7 @@ class MetaData:
 class ProfileLink:
     # TODO: Add default configuration for unhandled files
     # TODO: Proper Log Error Message for Unpresent Icon
-    social_profs_path = Path("./resources/data/social_profiles.json")
+    social_profs_path = SOCIAL_PROFILES_PATH
     default_meta = {"color": "MaterialGrey700", "command": "\\ProfileLink"}
 
     def __init__(self, network: str, username: str, url: str) -> None:
@@ -204,14 +203,16 @@ class Experience:
                 \\end{itemize}
                 """
             highlights_template = Template(textwrap.dedent(highlights_str))
-            filled += highlights_template.safe_substitute({
-                "highlights": "\n\t".join(
-                    [f"\\item {escape_latex(i)}" for i in self.highlights]
-                ),
-            })
-            
+            filled += highlights_template.safe_substitute(
+                {
+                    "highlights": "\n\t".join(
+                        [f"\\item {escape_latex(i)}" for i in self.highlights]
+                    ),
+                }
+            )
+
             return filled
-            
+
         return filled + "\n"
 
 
@@ -258,7 +259,7 @@ class Education:
             {$institution}
             ${summary}.
             """
-        
+
         template = Template(textwrap.dedent(template_str))
         data = {
             "studyType": self.studyType,
@@ -267,10 +268,10 @@ class Education:
             "start": self.start.strftime(config["datefmt"]),
             "end": self.end.strftime(config["datefmt"]),
             "institution": self.institution,
-            "summary": self.summary
+            "summary": self.summary,
         }
         filled = template.safe_substitute(data)
-        
+
         if len(self.highlights):
             highlights_str = """\
                 \\begin{itemize}
@@ -278,15 +279,17 @@ class Education:
                 \\end{itemize}
                 """
             highlights_template = Template(textwrap.dedent(highlights_str))
-            filled += highlights_template.safe_substitute({
-                "highlights": "\n\t".join(
-                    [f"\\item {escape_latex(i)}" for i in self.highlights]
-                ),
-            })
+            filled += highlights_template.safe_substitute(
+                {
+                    "highlights": "\n\t".join(
+                        [f"\\item {escape_latex(i)}" for i in self.highlights]
+                    ),
+                }
+            )
             return filled
 
-        
         return filled + EMPTY_ITEMIZE
+
 
 class TechnicalSkill:
     def __init__(
@@ -364,17 +367,12 @@ class Project:
 
 class Achievement:
     def __init__(self, data: dict) -> None:
-        self.title: str = data.get("title")
+        self.title: str = escape_latex(data.get("title"))
         pass
 
     def to_latex(self):
         return "\t\\item " + self.title.strip()
 
-
-def print_latex_syntax(code: str):
-    syn = Syntax(code, lexer_name="latex", background_color="default")
-    print(syn)
-    # print("\n")
 
 
 def test():
@@ -487,8 +485,6 @@ def test():
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.WARN,
-        filename="./resume_creation.log",
-        filemode="a",
         format="%(levelname)s - %(asctime)s - %(message)s",
         datefmt="%d-%b-%y %H:%M:%S",
     )
