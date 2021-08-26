@@ -1,5 +1,8 @@
 name: Build LaTeX Resume
-on: [push]
+on:
+  push:
+    tags:
+      - "*"
 
 jobs:
   build_latex:
