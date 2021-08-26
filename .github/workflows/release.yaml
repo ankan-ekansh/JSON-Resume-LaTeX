@@ -1,8 +1,5 @@
 name: Build LaTeX Resume
-on:  
-  push:
-    tags:
-      - '*'
+on: [push]
 
 jobs:
   build_latex:
@@ -15,14 +12,8 @@ jobs:
     
     - name: Build LaTeX
       run: |
-        bash ./build.sh run_build
+        bash ./run.sh run_build
     
-    - name: Create Artifacts of PDFs
-      uses: actions/upload-artifact@v2
-      with:
-        name: Resume_PDF
-        path: ./Resume.pdf
-
     - name: Create a Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
@@ -30,8 +21,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: |
-          Resume.pdf          
+          out/**/*.pdf
       
-      
+    - name: Upload PDF to Google Drive
+      uses: PeronTheDuck/glob-to-drive@v4
+      with:
+        glob: "out/**/*.pdf"
+        keepStructure: false
+        uploadTo: ${{ secrets.DRIVE_FOLDER_ID }}
+
+        credentials: ${{ secrets.CREDENTIALS }}
+        token: ${{ secrets.TOKEN }}
+        mimeType: "application/pdf"
         
         

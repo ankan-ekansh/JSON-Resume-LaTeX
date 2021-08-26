@@ -3,7 +3,13 @@
     "lastModified": "2021-07-27",
     "main_color": "MaterialBlue",
     "sec_color": "MaterialGrey",
-    "order": ["experience", "education", "technical_skill", "project", "achievement" ]
+    "order": [
+      "experience",
+      "education",
+      "technical_skill",
+      "project",
+      "achievement"
+    ]
   },
   "basics": {
     "name": "Ishaan Aditya",
@@ -50,7 +56,7 @@
       "highlights": [
         "Worked in the Deposit Analytics vertical of Business Intelligence Unit, researching the growth & behavior of NRI banking customers",
         "Collected and processed NRI Population & Remittance data from different sources to model time-series growth in NRI finance market of different countries.",
-        "Scraped News articles & tweets and used NLP based Clustering, Topic modelling and Sentiment analysis pipelines to gather actionable insights about NRI banking customers and different banking entitites",
+        "Scraped News articles & tweets and used NLP based Clustering, Topic modelling and Sentiment analysis pipelines to gather actionable insights about NRI banking customers and different banking entitites"
       ]
     },
     {
@@ -63,7 +69,7 @@
       "highlights": [
         "I was mentored by Dr. V.M.S.R. Murthy, IIT-ISM Dhanbad and also Mr. G. Gopinath, Scientist at the NIRM, Bengaluru.",
         "Created and ensembled ML & DL Models for different sparse distributions of a tabular dataset.",
-        "Used CTGAN and CopulaGAN models to  create a synthetic dataset for better training data",
+        "Used CTGAN and CopulaGAN models to  create a synthetic dataset for better training data"
       ]
     }
   ],
