@@ -1,0 +1,213 @@
+\DeclareRobustCommand{\sbseries}{\fontseries{sb}\selectfont}
+\newcommand{\textsb}[1]{\fontseries{sb}\selectfont #1}
+\setlist[itemize]{itemsep=0.5pt, leftmargin=1.5em, topsep=2pt}
+
+% Section Formatting
+\newcommand{\ruleafter}[1]{#1~\xrfill[0pt]{1pt}[\MainColorDark]}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titleformat{\section}
+{\Large \sffamily \color{\MainColorDark} \bfseries}
+{}
+{0em}
+{}
+
+% Subsection
+\titleformat{\subsection}
+{\large \bfseries}
+{}
+{0em}
+{}
+
+% Predefined Resume Header for this style
+
+\newcommand{\ResumeHeader}
+{ \noindent
+  \begin{minipage}[t][]{0.50\textwidth}
+        {\huge \noindent  \sffamily \sbseries \AuthorName} \\[1pt]
+        {\large \color{\MainColorDark}{\PositionName}}
+    \end{minipage}%
+    \hfill%
+    \begin{minipage}[t][]{0.40\textwidth}
+        \noindent\RaggedLeft
+        \GreyMonoText{\href{mailto:\email}{\email}}\\[1pt]
+        \GreyMonoText{\href{tel:\phone}{\PhoneFormatted}}
+    \end{minipage}\\[5pt]
+    {\HeaderSummary{\SummaryText}}
+    \medskip
+    {\LinksColoredStrip}
+    \vspace{-1em}
+}
+
+% Helper Commands for ResumeHeader
+
+\newcommand{\HeaderSummary}[1] % Summary included in Resume Header
+{\noindent \color{\SecColorDark}{#1}}
+
+\newcommand{\GreyMonoText}[1] % Grey Monospaced Normalsized Text
+{{\ttfamily \normalsize \color{\SecColorDark}{#1}}\normalcolor}
+
+
+\newcommand{\LinksColoredStrip}
+{%
+    \begin{colorstrip}{\MainColorDark}[left=1em]
+        \centering\InsertProfileLinks
+    \end{colorstrip}%
+}
+
+
+\newcommand{\ResumeProfilePhoto}[1]
+{%
+\begin{center}
+    \begin{tikzpicture}[baseline=(pic.center),inner sep=0pt]
+        \begin{scope}
+            \clip (0,0)  circle (1.35cm) node (pic) {\includegraphics[width=2.7cm]{./assets/photos/#1}};
+        \end{scope}
+        \draw [ultra thick] [\SecColorDark] (0, 0) circle (1.355cm);
+    \end{tikzpicture}%    
+\end{center}
+}
+
+\newcommand{\ResumeHeaderPhoto}
+{%
+    \vspace{-2em}
+    \begin{minipage}{0.75\textwidth}
+        \ResumeHeader
+    \end{minipage}%
+    \begin{minipage}{0.25\textwidth}
+        \ResumeProfilePhoto{profile.jpg}
+    \end{minipage}
+}
+
+% Below Title (Links to Profiles)
+\newlength{\linkseplength}
+\setlength{\linkseplength}{1.75em}
+% Sep between the Link Clickables
+\newcommand{\LinkSep}
+{\hspace{\linkseplength}}
+
+% \ProfileLink Usage = 
+% \ProfileLink{color}{icon-name}{url}{word_to_show_as_url}
+\newcommand{\FixedColor}{MaterialWhite}
+
+\newcommand{\ProfileLink}[4]
+{\color{\FixedColor}{\faIcon{#2}} \href{#3}{\color{\FixedColor}{\texttt{#4}}} \hspace{\linkseplength}}
+
+% Custom ICONS from PDF files in "../assets/icons" folder, Syntax same as \ProfileLink
+
+% \AltProfileLink with Custom icons, uses (Non Suffixed) \ImageChar
+\newcommand{\AltProfileLink}[4]
+{\ImageChar{\IconPath#2.pdf}  \href{#3}{\color{\FixedColor}{\texttt{#4}}} \hspace{\linkseplength}}
+
+% \AltProfileLink* with Custom icons, uses \ImageChar*
+\WithSuffix\newcommand\AltProfileLink*[4]
+{\ImageChar*{\IconPath#2.pdf} \href{#3}{\color{\FixedColor}{\texttt{#4}}} \hspace{\linkseplength}}
+
+% Image as char, non suffixed, scaled to 1em
+\newcommand{\ImageChar}[1] 
+{{\normalfont\includegraphics[height=1em]{#1}}}
+
+% Image as char, (suffixed), scale to size of full line pipe
+\WithSuffix\newcommand\ImageChar*[1]
+{\scalerel*{\includegraphics[height=1em]{#1}}{\small{\texttt{|}}}}
+
+
+% Technical Skills List
+\newenvironment{ListSkills}
+{\begin{itemize}}
+{\end{itemize}}
+
+\newcommand{\ItemSkill}[1] % Item for techskill list. Contains the header for the same
+{\item[{\textbullet}] {\normalsize \bfseries {#1}:} \normalcolor}
+
+
+% Projects
+% Projects usage -> \Project{Name}{Domain Name}{Date}{URL}{Tech Stack}
+\newcommand{\Project}[5]
+{
+    \href{#4}
+    {{\large \sffamily \bfseries #1}
+     {\color{\SecColorLight}{\small\faIcon{external-link-alt}}}
+    }\hfill
+    {\textsl{\color{\MainColorDark}{#2}}}\\[1pt]
+    \color{\SecColorDark}{\textsl{#5}}
+    \hfill
+    {\textsl{\color{\SecColorLight}{#3}}}
+    \normalcolor
+    \smallskip
+}
+
+% Professional Experience
+% Experience (and Education) usage -> \Experience{Job Title}{Location}{Instituition}{Date}
+\newcommand{\Experience}[4]
+{
+    {\large \sffamily \sbseries #1} \hfill
+    {\color{\MainColorDark}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \hfill
+    {\color{\SecColorLight}{\textsl{#4}}}\medskip
+}
+
+% Education Section
+\newcommand{\Education}[4]
+{
+    {\large \sffamily \sbseries #1} \hfill
+    {\color{\MainColorDark}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \hfill
+    {\color{\SecColorLight}{\textsl{#4}}}\medskip
+}
+
+% Achievements Section
+\newenvironment{YearAchievementList}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=1em, itemindent=1.15em]}
+{\end{itemize}}
+
+\newenvironment{AchievementList}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=2pt, label={\color{\MainColorDark}{\faTrophy}}]}
+{\end{itemize}}
+
+\newcommand{\AchvLine}[2]{{\bfseries #1}, #2}
+\newcommand{\AchvItem}[1]{\item[{\color{\MainColorDark}{#1}}]}
+
+% About Me
+\newenvironment{AboutMe}
+{\begin{quotation}}
+{\end{quotation}}
+
+% Course List (Coursera, Non Coursera, and Non Certificate COurses )
+\newenvironment{CourseList}
+{\begin{itemize}[itemsep=2.5pt]}
+{\end{itemize}}
+
+\newcommand{\CourseEntry}[2]
+{\item \textbf{#1} ({\slshape \color{\SecColorDark}{#2}})}
+
+\newcommand{\CourseEntryCredential}[3]
+{\item \textbf{#1} ({\slshape \color{\SecColorDark}{#2}}) \hfill \href{#3}{\color{\SecColorLight}{Certificate \faIcon{external-link-alt}}}}
+
+
+\newcommand{\CourseEntryCoursera}[3]
+{\item \textbf{#1} ({\slshape \color{\SecColorDark}{#2}}) \hfill \href{#3}{\color{\SecColorLight}{Coursera \faIcon{external-link-alt}}}}
+
+% RESEARCH EXPERIENCE
+\newcommand{\LinkIcon}[1]
+{\href{#1}{\color{\SecColorLight}{\faIcon{external-link-alt}}}}
+
+\newcommand{\ResearchEntry}[4]
+{\item {\bfseries #1} ({\slshape \color{\SecColorDark}{#2}}) \hfill \LinkIcon{#3}\\[3pt]
+\SmallPage{\emph{\color{\SecColorDark}{#4}}}}
+
+\newcommand{\SmallPage}[1]
+{\begin{minipage}[t]{0.80\textwidth}
+#1%
+\end{minipage}}
+
+\newenvironment{ResearchList}
+{\begin{itemize}}
+{\end{itemize}}
+
+
+% Extra Curricular Macors
+\newcommand{\GreyItalic}[1]
+{\color{\SecColorDark}{\emph{#1}}\normalcolor}
+
+\newcommand{\DateLike}[1]
+{\color{\SecColorLight}{\textsl{#1}}\normalcolor}
