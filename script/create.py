@@ -124,7 +124,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             )
             return process
 
-        latemk_stdout = ""
+        latemk_stdout = None
         error_raised = False
         try:
             move_process = run_process(
@@ -137,10 +137,14 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             )
 
             if config.KEEP_GENERATED_TEX:
+                out_resume_path = f"{main_cwd}/out/resume"
                 move_created_tex_files = run_process(
                     f"""
-                    cp "{temp_path}/content.tex" "{main_cwd}/out/content.tex"
-                    cp "{temp_path}/meta.tex" "{main_cwd}/out/meta.tex"
+                    mkdir -p out/resume
+                    cp "{main_cwd}/script/resume/template/macros.tex" "{out_resume_path}/macros.tex"
+                    cp "{main_cwd}/script/resume/template/resume.tex" "{out_resume_path}/resume.tex"
+                    cp "{temp_path}/content.tex" "{out_resume_path}/content.tex"
+                    cp "{temp_path}/meta.tex" "{out_resume_path}/meta.tex"
                     """
                 )
 
@@ -156,7 +160,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                 latexmk_process = run_process(
                     f"""
                     cd "{temp_path}"
-                    latexmk -xelatex -quiet resume.tex
+                    latexmk -xelatex resume.tex
                     """,
                     timeout=config.LATEXMK_TIMEOUT,
                 )
@@ -164,7 +168,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             except subprocess.TimeoutExpired as e:
                 logging.error("Timeout during latexmk run:\n" + str(e))
                 error_raised = True
-                latemk_stdout = str(e.output)
+                latemk_stdout = str(e.output.decode('utf-8'))
 
             except subprocess.CalledProcessError as e:
                 logging.error("ProcessError for latexmk:\n" + str(e))
@@ -188,7 +192,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                             """
                         )
 
-                        log_text = open(f"{main_cwd}/out/{output_filename}.log", "w").read()
+                        log_text = open(f"{main_cwd}/out/{output_filename}.log", "r").read()
                         if error_raised:
                             pprint("LaTeX Log\n" + log_text)
 
