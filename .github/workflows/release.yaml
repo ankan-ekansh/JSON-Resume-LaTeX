@@ -1,40 +1,37 @@
-name: Build LaTeX Resume
+name: Build JSON Resume
 on:
   push:
-    tags:
-      - "*"
+    paths:
+      - "*.jsonc"
 
 jobs:
   build_latex:
     runs-on: ubuntu-latest
     container:
       image: danteev/texlive:latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    
-    - name: Build LaTeX
-      run: |
-        bash ./run.sh run_build
-    
-    - name: Create a Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        files: |
-          out/**/*.pdf
-      
-    - name: Upload PDF to Google Drive
-      uses: PeronTheDuck/glob-to-drive@v4
-      with:
-        glob: "out/**/*.pdf"
-        keepStructure: false
-        uploadTo: ${{ secrets.DRIVE_FOLDER_ID }}
 
-        credentials: ${{ secrets.CREDENTIALS }}
-        token: ${{ secrets.TOKEN }}
-        mimeType: "application/pdf"
-        
-        
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Build Resume PDF
+        run: |
+          bash ./run run_build
+
+      - name: Create Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Built-Resume
+          path: ./out/*
+
+      # Will only create a release, if pushed with tag
+      - name: Create a Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            out/*.pdf
