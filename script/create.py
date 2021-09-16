@@ -14,7 +14,6 @@ import resume.sections as sections
 
 
 def create_resume_(data: dict, output_filename: str):
-    
     class SECTIONS(enum.Enum):
         none = enum.auto()
         achv = enum.auto()
@@ -22,7 +21,7 @@ def create_resume_(data: dict, output_filename: str):
         experience = enum.auto()
         education = enum.auto()
         project = enum.auto()
-        
+
     section_mapping = {
         "experience": SECTIONS.experience,
         "education": SECTIONS.education,
@@ -125,6 +124,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             )
             return process
 
+        latemk_stdout = ""
         error_raised = False
         try:
             move_process = run_process(
@@ -164,6 +164,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             except subprocess.TimeoutExpired as e:
                 logging.error("Timeout during latexmk run:\n" + str(e))
                 error_raised = True
+                latemk_stdout = str(e.output)
 
             except subprocess.CalledProcessError as e:
                 logging.error("ProcessError for latexmk:\n" + str(e))
@@ -179,16 +180,24 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
 
             finally:  # get latexmk log, in any case, evenif exceptions raised or not
                 if config.KEEP_LOG_FILES:
-                    get_latex_log_process = run_process(
-                        f"""
-                        cd "{temp_path}"
-                        cp -R "resume.log" "{main_cwd}/out/{output_filename}.log"
-                        """
-                    )
+                    try:
+                        get_latex_log_process = run_process(
+                            f"""
+                            cd "{temp_path}"
+                            cp -R "resume.log" "{main_cwd}/out/{output_filename}.log"
+                            """
+                        )
 
-                    log_text = open(f"{main_cwd}/out/{output_filename}.log", "r").read()
-                    if error_raised:
-                        pprint("LaTeX Log\n" + log_text)
+                        log_text = open(f"{main_cwd}/out/{output_filename}.log", "w").read()
+                        if error_raised:
+                            pprint("LaTeX Log\n" + log_text)
+
+                    except subprocess.CalledProcessError as e:
+                        logging.error(f"error during log_extraction process")
+
+                    if latemk_stdout:
+                        with open(f"{main_cwd}/out/latex_stdout.txt", "w") as stdout_file:
+                            stdout_file.write(latemk_stdout)
 
 
 def main():
