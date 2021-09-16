@@ -49,6 +49,7 @@
     {
       "company": "Axis Bank",
       "position": "Summer Intern",
+      "location": "Mumbai, India",
       "website": "https://www.axisbank.com",
       "startDate": "2021-05-24",
       "endDate": "2021-07-16",
@@ -62,6 +63,7 @@
     {
       "company": "Indian Institute of Technology ISM Dhanbad",
       "position": "Data Analyst Intern",
+      "location": "Dhanbad, India",
       "website": "https://www.iitism.ac.in/",
       "startDate": "2020-09-05",
       "endDate": "2020-11-24",
@@ -91,13 +93,13 @@
       "studyType": "Bachelor of Technology (ECE)",
       "startDate": "2018-07-01",
       "endDate": "2022-04-01",
-      "gpa": "8.11",
+      "location": "Ranchi, India",
       "url": "https://www.bitmesra.ac.in/",
-      "summary": "Bachelor of Technology in Electronics & Communication Engineering with OGPA of 8.11",
       "highlights": [
+        "Bachelor of Technology in Electronics & Communication Engineering with OGPA of 8.11",
         "Volunteered at National Service Scheme, BIT Mesra",
-        "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
-        "Served as General Body Member, Dhwani Music Club, BIT Mesra"
+        "Served as General Body Member, Dhwani Music Club, BIT Mesra",
+        "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra"
       ]
     }
   ],
