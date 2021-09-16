@@ -1,151 +1,102 @@
-import os
-import sys
-import json
-import config
-import pylatex
+import enum
 import logging
-import tempfile
+import os
 import subprocess
+import sys
+import tempfile
+from pathlib import Path
+from typing import Iterable, List, Tuple, Union
+from pprint import pprint
 import commentjson
 
-from pathlib import Path
-from textwrap import dedent, indent
-from typing import Iterable, List, Tuple
-
-from resume.sections import (
-    MetaData,
-    Achievement,
-    Education,
-    Experience,
-    ProfileLink,
-    Project,
-    TechnicalSkill,
-)
+import config
+import resume.sections as sections
 
 
-def parse_json(path: Path = "./resume.jsonc") -> dict:
-    with open(path, "r") as f:
-        d = commentjson.load(f)
-    return d
-
-
-def create_resume(data: dict, output_filename: str):
-    """
-    High Level Function to create Resume from the `json` resume spec passed in. Uses helper functions and submodule classes for actual building of resume tex file
-
-    Args:
-        data (dict): [description]
-    """
-    templates_path = Path("./script/resume/template.json")
-
-    def get_template(key: str, file: Path) -> Tuple[str]:
-        with open(file, "r") as f:
-            data: dict = json.load(f)
-
-        def join(x: Iterable[str]):
-            return "" if x[0] is None else "\n".join(x)
-
-        if data.get(key):
-            vals = data.get(key)
-            begin, mid, end = map(
-                join, (vals.get("begin"), vals.get("mid"), vals.get("end"))
-            )
-            return (begin, mid, end)
-
-        else:
-            return (None, None, None)
-
-    def get_order(data: dict) -> List[str]:
-        if data.get("meta"):
-            if data["meta"].get("order"):
-                return data["meta"].get("order")
-        return None
-
-    def section_MetaData(data: dict):
-        m = MetaData(data["basics"])
-        m.set_colors(data["meta"])
-        return m.to_latex()
-
-    def section_ProfileLinks(profiles: List[dict]):
-        beg, mid, end = get_template("ProfileLink", templates_path)
-        profiles_tex = []
-        for prof in profiles:
-            p = ProfileLink(**prof)
-            profiles_tex.append(p.to_latex())
-
-        final = dedent(beg) + indent("".join(profiles_tex), prefix="\t") + end
-        return final
-
-    def section_Experience(work: List[dict]):
-        beg, mid, end = get_template("Experience", templates_path)
-        final = "" + beg
-
-        for idx, work_entry in enumerate(work):
-            w = Experience(**work_entry)
-            final += w.to_latex()
-            if idx != len(work) - 1:
-                final += mid
-
-        return final + end
-
-    def section_Education(education: List[dict]):
-        beg, mid, end = get_template("Education", templates_path)
-        final = "" + beg
-
-        for idx, entry in enumerate(education):
-            w = Education(**entry)
-            final += w.to_latex()
-            if idx != len(education) - 1:
-                final += mid
-
-        return final + end
-
-    def section_Projects(projects: List[dict]):
-        beg, mid, end = get_template("Project", templates_path)
-        final = "" + beg
-
-        for idx, entry in enumerate(projects):
-            w = Project(entry)
-            final += w.to_latex()
-            if idx != len(projects) - 1:
-                final += mid
-
-        return final + end
-
-    def section_TechnicalSkill(skills: List[dict]):
-        beg, mid, end = get_template("TechnicalSkill", templates_path)
-        final = "" + beg
-
-        for entry in skills:
-            ts = TechnicalSkill(**entry)
-            final += "\t" + ts.to_latex()
-
-        return final + end
-
-    def section_Achievements(awards: List[dict]):
-        beg, mid, end = get_template("Achievement", templates_path)
-        final = "" + beg
-        for item in awards:
-            a = Achievement(item)
-            final += a.to_latex() + "\n"
-
-        return final + end
-
-    sections_mapping = {
-        "experience": section_Experience(data["work"]),
-        "education": section_Education(data["education"]),
-        "technical_skill": section_TechnicalSkill(data["skills"]),
-        "project": section_Projects(data["projects"]),
-        "achievement": section_Achievements(data["awards"]),
+def create_resume_(data: dict, output_filename: str):
+    
+    class SECTIONS(enum.Enum):
+        none = enum.auto()
+        achv = enum.auto()
+        skills = enum.auto()
+        experience = enum.auto()
+        education = enum.auto()
+        project = enum.auto()
+        
+    section_mapping = {
+        "experience": SECTIONS.experience,
+        "education": SECTIONS.education,
+        "technical_skill": SECTIONS.skills,
+        "project": SECTIONS.project,
+        "achievement": SECTIONS.achv,
     }
 
-    meta_file_text = section_MetaData(data)
-    order = get_order(data)
-    content = [section_ProfileLinks(data["basics"]["profiles"])]
-    content += [sections_mapping[k] for k in order]
-    content_file_text = "".join(content)
+    def get_order(data: dict):
+        default_order = ["experience", "education", "technical_skill", "project", "achievement"]
 
-    compile_tex_file(content_file_text, meta_file_text, output_filename)
+        if data.get("meta"):
+            if data["meta"].get("order"):
+                order = data["meta"].get("order")
+                return [section_mapping.get(item, SECTIONS.none) for item in order]
+
+        return [section_mapping.get(item, SECTIONS.none) for item in default_order]
+
+    def create_metadata() -> str:
+        nonlocal data
+        meta_text = ""
+        metadata = sections.MetaData(data["basics"])
+        metadata.set_colors(data.get("meta"))
+        meta_text += metadata.to_latex()
+
+        profile_text = "\n"
+        profiles = sections.ProfileLinks(data["basics"]["profiles"])
+        profile_text += profiles.to_latex()
+
+        return meta_text + profile_text
+
+    def get_section_text(section_type: SECTIONS) -> str:
+        """get text for all sections except meta and profile"""
+
+        def get_section_name():
+            nonlocal section_type
+            mapping = {
+                SECTIONS.achv: "Achievements",
+                SECTIONS.skills: "Technical Skills",
+                SECTIONS.experience: "Experience",
+                SECTIONS.education: "Education",
+                SECTIONS.project: "Projects",
+            }
+            return mapping[section_type]
+
+        nonlocal data
+        section_begin = "\\section{" + get_section_name() + "}\n"
+        section_text = ""
+
+        if section_type is SECTIONS.achv:
+            section_text += sections.Achievements(data["awards"]).to_latex()
+
+        if section_type is SECTIONS.skills:
+            section_text += sections.TechnicalSkills(data["skills"]).to_latex()
+
+        if section_type is SECTIONS.experience:
+            section_text += sections.Experience(data["work"]).to_latex()
+
+        if section_type is SECTIONS.education:
+            section_text += sections.Education(data["education"]).to_latex()
+
+        if section_type is SECTIONS.project:
+            section_text += sections.Projects(data["projects"]).to_latex()
+
+        return section_begin + section_text + "\n"
+
+    order = get_order(data)
+    meta_text = create_metadata()
+
+    content_text = ""
+    for section_type in order:
+        content_text += get_section_text(section_type)
+
+    compile_tex_file(content_text, meta_text, output_filename)
 
 
 def compile_tex_file(content_text: str, meta_text: str, output_filename: str) -> None:
@@ -185,6 +136,14 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                 """
             )
 
+            if config.KEEP_GENERATED_TEX:
+                move_created_tex_files = run_process(
+                    f"""
+                    cp "{temp_path}/content.tex" "{main_cwd}/out/content.tex"
+                    cp "{temp_path}/meta.tex" "{main_cwd}/out/meta.tex"
+                    """
+                )
+
         except subprocess.TimeoutExpired as e:
             logging.error(f"Timeout during initial move\n" + str(e))
 
@@ -209,7 +168,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             except subprocess.CalledProcessError as e:
                 logging.error("ProcessError for latexmk:\n" + str(e))
                 error_raised = True
-                
+
             else:  # get pdf file, as no exceptions raised
                 get_pdf_file_proc = run_process(
                     f"""
@@ -219,23 +178,30 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                 )
 
             finally:  # get latexmk log, in any case, evenif exceptions raised or not
-                get_latex_log_process = run_process(
-                    f"""
-                   cd "{temp_path}"
-                    cp -R "resume.log" "{main_cwd}/out/{output_filename}.log"
-                    """
-                )
-                log_text = open(f"{main_cwd}/out/{output_filename}.log", "r").read()
-                if error_raised:
-                    print("LaTeX Log\n" + log_text)
+                if config.KEEP_LOG_FILES:
+                    get_latex_log_process = run_process(
+                        f"""
+                        cd "{temp_path}"
+                        cp -R "resume.log" "{main_cwd}/out/{output_filename}.log"
+                        """
+                    )
+
+                    log_text = open(f"{main_cwd}/out/{output_filename}.log", "r").read()
+                    if error_raised:
+                        pprint("LaTeX Log\n" + log_text)
 
 
 def main():
     logging.basicConfig(
-        level=logging.WARN,
+        level=config.LOG_LEVEL,
         format="%(levelname)s - %(asctime)s - %(message)s",
         datefmt="%d-%b-%y %H:%M:%S",
     )
+
+    def parse_json(path: Path = "./resume.jsonc") -> dict:
+        with open(path, "r") as f:
+            data = commentjson.load(f)
+        return data
 
     args = sys.argv
     if len(args) - 1 == 2:
@@ -246,7 +212,7 @@ def main():
         data = parse_json(Path(args[1]))
         output_filename = args[1].split("/")[1].split(".")[0]
 
-    create_resume(data, output_filename)
+    create_resume_(data, output_filename)
 
 
 if __name__ == "__main__":
