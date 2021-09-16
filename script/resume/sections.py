@@ -31,6 +31,7 @@ class MetaData:
         self.email = data.get("email")
         self.phone = data.get("phone")
         self.phone_fmt = data.get("phoneFormat")
+        self.summary = data.get('summary')
         self.set_colors()
 
     def set_colors(self, colors: dict = None) -> None:
@@ -71,7 +72,14 @@ class MetaData:
             \\newcommand{\\maincolor}{$main_color}
             \\newcommand{\\seccolor}{$secn_color}
         """
-
+        
+        summary_command = ""
+        if self.summary:
+            summary_command = "\\newcommand{\\SummaryText}\n{" + escape_latex(self.summary).strip() + "}"
+        
+        else:
+            summary_command = "\\newcommand{\\SummaryText}{ }"
+        
         if MetaData.colors["custom"]:
             for command in MetaData.colors["custom"]:
                 command_str = f"{command}\n"
@@ -91,6 +99,7 @@ class MetaData:
         """
 
         filled_text += textwrap.dedent(text_to_include_after)
+        filled_text += summary_command + "\n"
 
         return filled_text
 
@@ -183,7 +192,6 @@ class ProfileLinks:
                 """\
                 \\newcommand{\\InsertProfileLinks}
                 {
-                \\vspace{-0.85em}
                 \\begin{center}
                 $links
                 \\end{center}
@@ -410,7 +418,7 @@ class Projects:
             config_ = self.options()
             template = Template(
                 """\
-                \\ProjectHead
+                \\Project
                 {$name}
                 {$domain_name}
                 {$start to $end}

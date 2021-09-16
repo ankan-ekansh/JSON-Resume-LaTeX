@@ -102,6 +102,9 @@ def create_resume_(data: dict, output_filename: str):
 def compile_tex_file(content_text: str, meta_text: str, output_filename: str) -> None:
     """compile tex file with main.tex string passed into input with temporary directory"""
 
+    template_dir = config.TEMPLATE_DIR
+    logging.info(f"using template {template_dir.name}")
+
     with tempfile.TemporaryDirectory() as td:
         temp_path = Path(td)
         main_cwd = Path(os.getcwd())
@@ -130,8 +133,8 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
         try:
             move_process = run_process(
                 f"""
-                cp "./script/resume/template/macros.tex" "{temp_path}/macros.tex"
-                cp "./script/resume/template/resume.tex" "{temp_path}/resume.tex"
+                cp "{template_dir}/macros.tex" "{temp_path}/macros.tex"
+                cp "{template_dir}/resume.tex" "{temp_path}/resume.tex"
                 cp -R "./assets" "{temp_path}"
                 mkdir -p out
                 """
@@ -143,8 +146,8 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                 move_created_tex_files = run_process(
                     f"""
                     mkdir -p out/resume
-                    cp "{main_cwd}/script/resume/template/macros.tex" "{out_resume_path}/macros.tex"
-                    cp "{main_cwd}/script/resume/template/resume.tex" "{out_resume_path}/resume.tex"
+                    cp "{template_dir}/macros.tex" "{out_resume_path}/macros.tex"
+                    cp "{template_dir}/resume.tex" "{out_resume_path}/resume.tex"
                     cp "{temp_path}/content.tex" "{out_resume_path}/content.tex"
                     cp "{temp_path}/meta.tex" "{out_resume_path}/meta.tex"
                     """
@@ -170,7 +173,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
             except subprocess.TimeoutExpired as e:
                 logging.error("Timeout during latexmk run:\n" + str(e))
                 error_raised = True
-                latemk_stdout = str(e.output.decode('utf-8'))
+                latemk_stdout = str(e.output.decode("utf-8"))
 
             except subprocess.CalledProcessError as e:
                 logging.error("ProcessError for latexmk:\n" + str(e))

@@ -14,3 +14,4 @@ TIMEOUT = 5
 
 # Paths
 SOCIAL_PROFILES_PATH = Path("./assets/data/social_profiles.json")
+TEMPLATE_DIR = Path("./script/resume/template_colorstrip")
