@@ -95,6 +95,7 @@ def create_resume_(data: dict, output_filename: str):
     for section_type in order:
         content_text += get_section_text(section_type)
 
+    logging.info(f"generated text, moving files to compilation")
     compile_tex_file(content_text, meta_text, output_filename)
 
 
@@ -135,6 +136,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                 mkdir -p out
                 """
             )
+            logging.info("moved files into temp directory")
 
             if config.KEEP_GENERATED_TEX:
                 out_resume_path = f"{main_cwd}/out/resume"
@@ -181,6 +183,7 @@ def compile_tex_file(content_text: str, meta_text: str, output_filename: str) ->
                     cp -R "resume.pdf" "{main_cwd}/out/{output_filename}.pdf"
                     """
                 )
+                logging.info(f"build and saved {output_filename}.pdf")
 
             finally:  # get latexmk log, in any case, evenif exceptions raised or not
                 if config.KEEP_LOG_FILES:
