@@ -1,0 +1,115 @@
+\DeclareRobustCommand{\sbseries}{\fontseries{sb}\selectfont}
+\newcommand{\textsb}[1]{\fontseries{sb}\selectfont #1}
+\setlist[itemize]{itemsep=0.5pt, leftmargin=1.5em, topsep=2pt}
+
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titleformat{\section}{\Large \sffamily}{}{0em}{}
+
+%%% Colors
+% These are Derived Colors
+\newcommand{\CourseraColor}{MaterialBlue600}
+\newcommand{\MainColorDark}{\maincolor900}
+\newcommand{\SecColorDark}{\seccolor800}
+\newcommand{\SecColorLight}{\seccolor}
+
+\newlength{\linkseplength}
+\setlength{\linkseplength}{0.35em}
+
+% Below Title (Links to Profiles)
+\newcommand{\ProfileLink}[4]
+{\color{#1}{\faIcon{#2}} \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
+
+% Sep between the Link Clickables
+\newcommand{\LinkSep}{\hspace{\linkseplength}}
+
+% Custom ICONS from PDF files in ../res/icons folder, Syntax same as ProfileLink
+\newcommand{\AltProfileLink}[4]
+% Alt Profile Link with Custom icons, uses (Non Suffixed) \ImageChar
+{\ImageChar{\IconPath#2.pdf}  \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
+
+\WithSuffix\newcommand\AltProfileLink*[4]
+% Alt Profile Link* with Custom icons, uses \ImageChar*
+{\ImageChar*{\IconPath#2.pdf} \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
+
+\newcommand{\ImageChar}[1] 
+% image as char, non suffixed, scaled to 1em
+{{\normalfont\includegraphics[height=1em]{#1}}}
+
+\WithSuffix\newcommand\ImageChar*[1] 
+% Image as char, suffixed, scale to size of full line pipe
+{\scalerel*{\includegraphics[height=1em]{#1}}{\small{\texttt{|}}}}
+
+% Technical Skill Boxes (Not Using!)
+\newenvironment{SkillPart}[2]
+{%
+    \begin{minipage}[t][]{#1\textwidth}
+        \TechSkillHead{#2}\\
+}
+{\end{minipage}}
+
+\newcommand{\TechSkillHead}[1]
+{{\large \sffamily \color{\MainColorDark}{#1}}}
+
+\newtcbox{\inlinebox}[1][]
+{   enhanced, box align=bottom, nobeforeafter,
+    colframe=\maincolor600, colback=\maincolor200,
+    size=small, left=0pt, right=0pt,
+    boxsep=4pt, before upper= \strut,
+    #1
+}
+\newcommand{\Skill}[1]{\inlinebox{#1} \hspace{1pt}}
+
+% Technical Skills List (Currently Using)
+\newenvironment{ListSkills}[1]
+{%
+    \begin{itemize}[]
+}
+{\end{itemize}}
+
+\newcommand{\ItemSkill}[1]
+{\item[\color{\MainColorDark}{\textbullet}] {\normalsize \color{\MainColorDark}{#1}:} \normalcolor}
+
+
+% Projects
+\newcommand{\ProjectHead}[4]
+{
+    \noindent\href{#3}{\large \sffamily \color{\MainColorDark}{#1} \color{\SecColorLight}{\small {\faIcon{external-link-alt}}}}
+    \hfill
+    {\textsl{\color{\SecColorLight}{#2}}}\\[1pt]
+    \color{\SecColorDark}{\textsl{#4}}\normalcolor
+    \smallskip
+}
+
+% Entries for Coursera MOOCs
+\newcommand{\CourseEntry}[4]
+{{\large \color{\MainColorDark}{#1}}\\
+    #2 \\
+    {\normalsize \color{\CourseraColor}{Coursera :}}
+    {\small \href{#3}{\color{\SecColorDark}{\texttt{#4}}}}
+    \\[1pt]
+}
+
+% Section for a small bio, not using here.
+\newcommand{\AboutMe}[1]
+{\hspace{-.25em}{\color{\SecColorDark}{\emph{#1}}}}
+
+%  Professional Experience
+\newcommand{\Experience}[3]
+{
+    {\large \sffamily \color{\MainColorDark}{#1}} \hfill
+    {\color{\SecColorLight}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}}\smallskip
+}
+
+%  Education Section
+\newcommand{\Education}[3]
+{
+    {\large \sffamily \color{\MainColorDark}{#1}} \hfill
+    {\color{\SecColorLight}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \\[4pt]
+}
+
+% Achievements Section
+\newenvironment{AchievementList}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=2pt, label={\color{\MainColorDark}{\faTrophy}}]}
+{\end{itemize}}
