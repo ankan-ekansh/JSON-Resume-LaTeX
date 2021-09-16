@@ -2,114 +2,137 @@
 \newcommand{\textsb}[1]{\fontseries{sb}\selectfont #1}
 \setlist[itemize]{itemsep=0.5pt, leftmargin=1.5em, topsep=2pt}
 
+
+% Section Header Forrmatting
 \titlespacing*{\section}{0pt}{8pt}{4pt}
-\titleformat{\section}{\Large \sffamily}{}{0em}{}
+\newcommand\ruleafter[1]{#1~\xrfill[0pt]{1pt}}
 
-%%% Colors
-% These are Derived Colors
-\newcommand{\CourseraColor}{MaterialBlue600}
-\newcommand{\MainColorDark}{\maincolor900}
-\newcommand{\SecColorDark}{\seccolor800}
-\newcommand{\SecColorLight}{\seccolor}
+\titleformat{\section}
+{\LARGE \sffamily \color{\MainColorDark} \bfseries}{}{0em}{}
 
-\newlength{\linkseplength}
-\setlength{\linkseplength}{0.35em}
+% Helper Commmands, General Use
+\newcommand{\LinkText}[1] % Monospaced, Underlined text for links
+{\texttt{\underline{#1\strut{}}}}
+
+\WithSuffix\newcommand\LinkText*[1] % just monospaced link text
+{\texttt{#1}}
+
+\newcommand{\PipeLinkSep}
+{\LinkSep {\texttt{|}} \LinkSep}
+
+% Resume Header
+\newcommand{\ResumeHeader}
+{
+    \begin{center}
+        {\Huge  \sffamily \sbseries \AuthorName} \\[0.5em]
+        \color{MaterialGrey600}
+        {\href{mailto:\email}{\LinkText*{\email}} \PipeLinkSep \href{tel:\phone}{\LinkText*{\PhoneFormatted}}}
+    \end{center}
+    \InsertProfileLinks
+}
+
+\newcommand{\ResumeProfilePhoto}[1]
+{% \hspace*{0.4cm}
+    \begin{center}
+        \begin{tikzpicture}[baseline=(pic.center),inner sep=0pt]
+            \begin{scope}
+                \clip (0,0)  circle (1.35cm) node (pic) {\includegraphics[width=2.7cm]{./assets/photos/#1}};
+            \end{scope}
+            \draw [ultra thick] [\SecColorDark] (0, 0) circle (1.355cm);
+        \end{tikzpicture}%    
+    \end{center}
+}
+
+\newcommand{\ResumeHeaderWithPhoto}
+{%
+    \vspace{-2em}
+    \begin{minipage}{0.75\textwidth}
+        \ResumeHeader
+    \end{minipage}%
+    \begin{minipage}{0.25\textwidth}
+        \ResumeProfilePhoto{profile.jpg}
+    \end{minipage}
+}
 
 % Below Title (Links to Profiles)
-\newcommand{\ProfileLink}[4]
-{\color{#1}{\faIcon{#2}} \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
 
-% Sep between the Link Clickables
+% Spacing Parameters
+\newlength{\linkseplength}
+\setlength{\linkseplength}{0.35em}
 \newcommand{\LinkSep}{\hspace{\linkseplength}}
 
+% ProfileLink command for Font Awesome Icons
+\newcommand{\ProfileLink}[4]
+{\color{#1}{\faIcon{#2}} \href{#3}{\color{#1}{\LinkText{#4}}} \LinkSep}
+
 % Custom ICONS from PDF files in ../res/icons folder, Syntax same as ProfileLink
-\newcommand{\AltProfileLink}[4]
-% Alt Profile Link with Custom icons, uses (Non Suffixed) \ImageChar
-{\ImageChar{\IconPath#2.pdf}  \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
-
-\WithSuffix\newcommand\AltProfileLink*[4]
-% Alt Profile Link* with Custom icons, uses \ImageChar*
-{\ImageChar*{\IconPath#2.pdf} \href{#3}{\color{#1}{\texttt{#4}}} \hspace{\linkseplength}}
-
-\newcommand{\ImageChar}[1] 
+%%% ImageChar commands to put pdf image as character
 % image as char, non suffixed, scaled to 1em
+\newcommand{\ImageChar}[1] 
 {{\normalfont\includegraphics[height=1em]{#1}}}
 
-\WithSuffix\newcommand\ImageChar*[1] 
 % Image as char, suffixed, scale to size of full line pipe
+\WithSuffix\newcommand\ImageChar*[1] 
 {\scalerel*{\includegraphics[height=1em]{#1}}{\small{\texttt{|}}}}
 
-% Technical Skill Boxes (Not Using!)
-\newenvironment{SkillPart}[2]
-{%
-    \begin{minipage}[t][]{#1\textwidth}
-        \TechSkillHead{#2}\\
-}
-{\end{minipage}}
+% Alt Profile Link with Custom icons, uses (Non Suffixed) \ImageChar
+\newcommand{\AltProfileLink}[4]
+{\ImageChar{\IconPath#2.pdf}  \href{#3}{\color{#1}{\LinkText{#4}}} \LinkSep}
 
-\newcommand{\TechSkillHead}[1]
-{{\large \sffamily \color{\MainColorDark}{#1}}}
-
-\newtcbox{\inlinebox}[1][]
-{   enhanced, box align=bottom, nobeforeafter,
-    colframe=\maincolor600, colback=\maincolor200,
-    size=small, left=0pt, right=0pt,
-    boxsep=4pt, before upper= \strut,
-    #1
-}
-\newcommand{\Skill}[1]{\inlinebox{#1} \hspace{1pt}}
-
-% Technical Skills List (Currently Using)
-\newenvironment{ListSkills}[1]
-{%
-    \begin{itemize}[]
-}
-{\end{itemize}}
-
-\newcommand{\ItemSkill}[1]
-{\item[\color{\MainColorDark}{\textbullet}] {\normalsize \color{\MainColorDark}{#1}:} \normalcolor}
-
-
-% Projects
-\newcommand{\ProjectHead}[4]
-{
-    \noindent\href{#3}{\large \sffamily \color{\MainColorDark}{#1} \color{\SecColorLight}{\small {\faIcon{external-link-alt}}}}
-    \hfill
-    {\textsl{\color{\SecColorLight}{#2}}}\\[1pt]
-    \color{\SecColorDark}{\textsl{#4}}\normalcolor
-    \smallskip
-}
-
-% Entries for Coursera MOOCs
-\newcommand{\CourseEntry}[4]
-{{\large \color{\MainColorDark}{#1}}\\
-    #2 \\
-    {\normalsize \color{\CourseraColor}{Coursera :}}
-    {\small \href{#3}{\color{\SecColorDark}{\texttt{#4}}}}
-    \\[1pt]
-}
-
-% Section for a small bio, not using here.
-\newcommand{\AboutMe}[1]
-{\hspace{-.25em}{\color{\SecColorDark}{\emph{#1}}}}
+% Alt Profile Link* with Custom icons, uses \ImageChar*
+\WithSuffix\newcommand\AltProfileLink*[4]
+{\ImageChar*{\IconPath#2.pdf} \href{#3}{\color{#1}{\texttt{#4}}} \LinkSep}
 
 %  Professional Experience
-\newcommand{\Experience}[3]
+\newcommand{\Experience}[4]
 {
-    {\large \sffamily \color{\MainColorDark}{#1}} \hfill
-    {\color{\SecColorLight}{\textsl{#2}}} \\[1pt]
-    {\color{\SecColorDark}{\textsl{#3}}}\smallskip
+    {\large \sffamily \sbseries #1} \hfill
+    {\color{\MainColorDark}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \hfill
+    {\color{\SecColorLight}{\textsl{#4}}}\medskip
 }
 
 %  Education Section
-\newcommand{\Education}[3]
+\newcommand{\Education}[4]
 {
-    {\large \sffamily \color{\MainColorDark}{#1}} \hfill
-    {\color{\SecColorLight}{\textsl{#2}}} \\[1pt]
-    {\color{\SecColorDark}{\textsl{#3}}} \\[4pt]
+    {\large \sffamily \sbseries #1} \hfill
+    {\color{\MainColorDark}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \hfill
+    {\color{\SecColorLight}{\textsl{#4}}}\medskip
+}
+
+% Technical Skills List (Currently Using)
+\newenvironment{ListSkills}
+{\begin{itemize}}
+{\end{itemize}}
+
+\newcommand{\ItemSkill}[1]
+{\item[{\textbullet}] {\normalsize \bfseries {#1}:} \normalcolor}
+
+
+% Projects
+\newcommand{\ProjectHead}[5]
+{
+    \href{#4}
+    {{\large \sffamily \bfseries #1}
+     {\color{\SecColorLight}{\small\faIcon{external-link-alt}}}
+    }\hfill
+    {\textsl{\color{\MainColorDark}{#2}}}\\[1pt]
+    \color{\SecColorDark}{\textsl{#5}}
+    \hfill
+    {\textsl{\color{\SecColorLight}{#3}}}
+    \normalcolor
+    \smallskip
 }
 
 % Achievements Section
+\newenvironment{YearAchievementList}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=1em, itemindent=1.15em]}
+{\end{itemize}}
+
 \newenvironment{AchievementList}
 {\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=2pt, label={\color{\MainColorDark}{\faTrophy}}]}
 {\end{itemize}}
+
+\newcommand{\AchvLine}[2]{{\bfseries #1}, #2}
+\newcommand{\AchvItem}[1]{\item[{\color{\MainColorDark}{#1}}]}
