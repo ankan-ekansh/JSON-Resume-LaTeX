@@ -1,7 +1,17 @@
 from pathlib import Path
+import logging
 
+# Constants
+LOG_LEVEL = logging.DEBUG
 
-LATEXMK_TIMEOUT = 15
+# Flags
+KEEP_GENERATED_TEX = True
+KEEP_LOG_FILES = True
+
+# Timeouts
+LATEXMK_TIMEOUT = 10
 TIMEOUT = 5
 
+# Paths
 SOCIAL_PROFILES_PATH = Path("./assets/data/social_profiles.json")
+TEMPLATE_DIR = Path("./script/resume/template_original")

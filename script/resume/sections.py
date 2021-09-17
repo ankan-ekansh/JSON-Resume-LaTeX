@@ -1,26 +1,29 @@
 import json
 import logging
 import textwrap
-from typing import List
+from typing import ClassVar, Dict, List
 from pathlib import Path
 from string import Template
 from datetime import datetime
 from pylatex import escape_latex
-from config import *
+import config
 
-EMPTY_ITEMIZE = textwrap.dedent(
-    """\
-    \\begin{itemize}[nosep]\item[]
-    \\end{itemize}
-    """
-)
+
+def fill_template(template: Template, values: dict, de_indent=True) -> str:
+    if de_indent:
+        # return textwrap.dedent(template.substitute(values))
+        filled = template.substitute(values)
+        res = []
+        for line in filled.splitlines():
+            res.append(line.strip())
+        return "\n".join(res)
+
+    else:
+        return template.substitute(values)
+
 
 class MetaData:
-    colors = {
-        "main_color": "MaterialDeepOrange",
-        "sec_color": "MaterialGrey",
-        "custom": [],
-    }
+    colors: dict = {"main_color": "MaterialBlue", "secn_color": "MaterialGrey", "custom": []}
 
     def __init__(self, data: dict) -> None:
         self.name = data.get("name")
@@ -28,464 +31,491 @@ class MetaData:
         self.email = data.get("email")
         self.phone = data.get("phone")
         self.phone_fmt = data.get("phoneFormat")
+        self.summary = data.get('summary')
         self.set_colors()
 
-    def set_colors(self, colors: dict = None):
+    def set_colors(self, colors: dict = None) -> None:
         if not colors:
             colors = MetaData.colors
 
-        self.main_color = colors["main_color"]
-        self.sec_color = colors["sec_color"]
+        self.main_color = colors.get("main_color")
+        
+        if 'secn_color' in colors.keys():
+            self.secn_color = colors.get("secn_color")
 
+        if 'sec_color' in colors.keys():
+            self.secn_color = colors.get("sec_color")
+        
     @staticmethod
     def add_custom_color_command(color_command: str):
         MetaData.colors["custom"].append(color_command)
 
-    def to_latex(self):
-        if (not self.main_color) and (not self.sec_color):
-            self.main_color = MetaData.colors["main_color"]
-            self.sec_color = MetaData.colors["sec_color"]
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "email": self.email,
+            "phone": self.phone,
+            "position": self.position,
+            "phone_fmt": self.phone_fmt,
+            "main_color": self.main_color,
+            "secn_color": self.secn_color,
+        }
 
-        template_str = """\
+    def to_latex(self) -> str:
+        template_str = """
             \\newcommand{\\AuthorName}{$name}
-            \\newcommand{\\postapp}{$position}
+            \\newcommand{\\PositionName}{$position}
             \\newcommand{\\email}{$email}
             \\newcommand{\\phone}{$phone}
             \\newcommand{\\PhoneFormatted}{$phone_fmt}
             
             \\newcommand{\\maincolor}{$main_color}
-            \\newcommand{\\seccolor}{$sec_color}
-            """
-
-        template_str = textwrap.dedent(template_str)
-        if len(MetaData.colors["custom"]):
+            \\newcommand{\\seccolor}{$secn_color}
+        """
+        
+        summary_command = ""
+        if self.summary:
+            summary_command = "\\newcommand{\\SummaryText}\n{" + escape_latex(self.summary).strip() + "}"
+        
+        else:
+            summary_command = "\\newcommand{\\SummaryText}{ }"
+        
+        if MetaData.colors["custom"]:
             for command in MetaData.colors["custom"]:
                 command_str = f"{command}\n"
                 template_str += command_str
 
         template = Template(template_str)
-        data = {
-            "name": self.name,
-            "position": self.position,
-            "email": self.email,
-            "phone": self.phone,
-            "phone_fmt": self.phone_fmt,
-            "main_color": self.main_color,
-            "sec_color": self.sec_color,
-        }
-        return template.safe_substitute(data)
+        data = self.to_dict()
+        filled_text = fill_template(template, data).strip()
+
+        text_to_include_after = """\
+            \n
+            \\newcommand{\\MainColorDark}{\\maincolor800}
+            \\newcommand{\\SecColorDark}{\\seccolor800}
+            \\newcommand{\\SecColorLight}{\\seccolor500}
+            \\renewcommand{\\maketitle}{\\ResumeHeader}
+            \n
+        """
+
+        filled_text += textwrap.dedent(text_to_include_after)
+        filled_text += summary_command + "\n"
+
+        return filled_text
 
 
-class ProfileLink:
-    # TODO: Add default configuration for unhandled files
-    # TODO: Proper Log Error Message for Unpresent Icon
-    social_profs_path = SOCIAL_PROFILES_PATH
-    default_meta = {"color": "MaterialGrey700", "command": "\\ProfileLink"}
+class ProfileLinks:
+    class profile_link:
+        # TODO: Add default configuration for unhandled files
+        # TODO: Proper Log Error Message for Unpresent Icon
 
-    def __init__(self, network: str, username: str, url: str) -> None:
-        self.network = network.lower()
-        self.username = escape_latex(username)
-        self.url = url
-        self.data = {  # schema defined here
-            "username": self.username,
-            "url": self.url,
-            "network": self.network,
-            "file": "",
-            "color": "",
-            "custom_color_command": "",
-            "command": "",
-        }
+        class default:
+            color: str = "MaterialGrey700"
+            command: str = "\\ProfileLink"
+            default_meta: dict = {"color": color, "command": command}
 
-    def get_meta(self) -> dict:
-        nw = self.network
-        with open(ProfileLink.social_profs_path, "r") as f:
-            data = json.load(f)
+        def __init__(self, data: dict, is_ending: bool = False) -> None:
+            self.network = data.get("network", "").lower()
+            self.username = escape_latex(data.get("username", ""))
+            self.url = data.get("url", "")
+            self.data = {  # schema defined here
+                "username": self.username,
+                "url": self.url,
+                "network": self.network,
+                "file": "",
+                "color": "",
+                "custom_color_command": "",
+                "command": "",
+            }
+            self.is_ending = is_ending
 
-        if nw in data["custom_icons"].keys():
-            meta = data["custom_icons"][nw]
-            return meta
+        def get_meta(self) -> dict:
+            network = self.network
+            with open(config.SOCIAL_PROFILES_PATH, "r") as f:
+                data = json.load(f)
 
-        elif nw in data["fontawesome"].keys():
-            meta = data["fontawesome"][nw]
-            if not meta:
-                return ProfileLink.default_meta
+            if network in data["custom_icons"].keys():
+                meta = data["custom_icons"][network]
+                return meta
 
-            return meta
+            elif network in data["fontawesome"].keys():
+                meta = data["fontawesome"][network]
+                if not meta:
+                    return self.default().default_meta
+                return meta
 
-        else:
-            raise KeyError(
-                f"Icon for `{self.network}` not found in LaTeX FontAwesome or Custom Database"
-            )
+            else:
+                raise KeyError(
+                    f"Icon for `{self.network}` not found in LaTeX-FA5 or Custom Database"
+                )
 
-    def to_latex(self) -> str:
-        meta = self.get_meta()
-        data = self.data
+        def to_latex(self) -> str:
+            data = self.data
+            try:
+                meta = self.get_meta()
 
-        if not meta:
-            logging.warning(f"No metadata available for {self.network}")
+            except KeyError:
+                logging.warning(f"No metadata available for {self.network}. Skipping...")
+                return ""
 
-        else:
-            for k in meta.keys():
-                data[k] = meta[k]
+            for key in meta.keys():
+                data[key] = meta[key]
 
-            template_str = """\
+            template = Template(
+                """\
                 $command
                 {$color}
                 {$network}
                 {$url}
                 {$username}
-                \\LinkSep
-                %
                 """
+            )
 
             if data.get("custom_color_command"):
                 MetaData.add_custom_color_command(data["custom_color_command"])
 
-            template = Template(textwrap.dedent(template_str))
-            logging.info(f"Created `ProfileLink` for {self.network}")
-            return template.safe_substitute(data)
+            logging.info(f"created ProfileLink for ({self.network})")
+            filled = fill_template(template, data)
+
+            if not self.is_ending:
+                filled += "\\LinkSep\n%\n"
+
+            return filled
+
+    def __init__(self, profiles: List[dict]) -> None:
+        self.profiles = profiles
+        self.last_idx = len(profiles) - 1
+
+    def to_latex(self) -> str:
+        template = Template(
+            textwrap.dedent(
+                """\
+                \\newcommand{\\InsertProfileLinks}
+                {
+                \\begin{center}
+                $links
+                \\end{center}
+                }    
+                """
+            )
+        )
+
+        links_text = ""
+        for idx, profile in enumerate(self.profiles):
+            is_last = idx == self.last_idx
+            links_text += self.profile_link(profile, is_last).to_latex()
+
+        return fill_template(template, {"links": links_text})
 
 
 class Experience:
-    _config = {"datefmt": "%b %Y", "show_summary": False, "link_website": False}
+    class experience:
+        class options:
+            show_summary: bool = False
+            link_website: bool = False
+            date_fmt: str = "%b %Y"
+            seperator: str = "\n".join(["%", "\\bigskip", "%\n"])
 
-    def __init__(
-        self,
-        company: str = None,
-        position: str = None,
-        website: str = None,
-        startDate: str = None,
-        endDate: str = None,
-        summary: str = None,
-        highlights: List[str] = None,
-    ) -> None:
+        def __init__(self, data: dict, is_ending: bool = False) -> None:
+            self.is_ending = is_ending
+            self.company = data.get("company", "")
+            self.website = data.get("website", "")
+            self.endDate = data.get("endDate", "")
+            self.summary = data.get("summary", "")
+            self.location = data.get("location", "")
+            self.position = data.get("position", "")
+            self.startDate = data.get("startDate", "")
+            self.highlights = data.get("highlights", "")
+            self.parse_dates()
 
-        self.company = company
-        self.position = position
-        self.website = website
-        self.startDate = startDate
-        self.endDate = endDate
-        self.summary = summary
-        self.highlights = highlights
+        def parse_dates(self):
+            self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
+            self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
 
-    def parse_dates(self):
-        self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
-        self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
+        def to_latex(self) -> str:
+            config_ = self.options()
 
-    def to_latex(self):
-        self.parse_dates()
-        config = Experience._config
+            template = Template(
+                """\
+                \\Experience
+                {$position}
+                {$location}
+                {$work_place}
+                {$start to $end}
+                """
+            )
 
-        if config["link_website"]:
-            work_place = "\\href{" + self.website + "}{" + self.company + "}"
-        else:
-            work_place = f"{self.company}"
-
-        template_str = """\
-            \\Experience
-            {$position}
-            {$start to $end}
-            {$work_place}
-            """
-        template = Template(textwrap.dedent(template_str))
-        data = {
-            "position": self.position,
-            "start": self.start.strftime(config["datefmt"]),
-            "end": self.end.strftime(config["datefmt"]),
-            "work_place": work_place,
-        }
-        filled = template.safe_substitute(data)
-
-        if len(self.highlights):
-            highlights_str = """\
+            highlights_template = Template(
+                """\
                 \\begin{itemize}
                 \t$highlights  
                 \\end{itemize}
                 """
-            highlights_template = Template(textwrap.dedent(highlights_str))
-            filled += highlights_template.safe_substitute(
-                {
-                    "highlights": "\n\t".join(
-                        [f"\\item {escape_latex(i)}" for i in self.highlights]
-                    ),
-                }
             )
 
+            work_place = (
+                "\\href{" + self.website + "}{" + self.company + "}"
+                if config_.link_website
+                else self.company
+            )
+
+            data = {
+                "position": self.position,
+                "location": self.location,
+                "start": self.start.strftime(config_.date_fmt),
+                "end": self.end.strftime(config_.date_fmt),
+                "work_place": work_place,
+            }
+
+            filled = fill_template(template, data)
+
+            if self.highlights:
+                highlights_text = "\n\t".join(
+                    [f"\\item {escape_latex(item)}" for item in self.highlights]
+                )
+                filled += fill_template(highlights_template, {"highlights": highlights_text})
+
+            if not self.is_ending:
+                filled += config_.seperator
+
+            else:
+                filled += "\n"
+            
+            logging.info(f"created Experience for ({self.company}, {self.position })")
             return filled
 
-        return filled + "\n"
+    def __init__(self, exp: List[dict]) -> None:
+        self.experience_entries = exp
+        self.last_idx = len(exp) - 1
+
+    def to_latex(self) -> str:
+        filled = ""
+        for idx, experience_entry in enumerate(self.experience_entries):
+            is_last = idx == self.last_idx
+            filled += self.experience(experience_entry, is_last).to_latex()
+
+        return filled
 
 
 class Education:
-    _config = {
-        "datefmt": "%Y",
-    }
+    class education:
+        class options:
+            show_summary: bool = False
+            link_website: bool = False
+            date_fmt: str = "%b %Y"
+            seperator: str = "\n".join(["%", "\\bigskip", "%\n"])
 
-    def __init__(
-        self,
-        institution: str = None,
-        area: str = None,
-        studyType: str = None,
-        startDate: str = None,
-        endDate: str = None,
-        gpa: str = None,
-        summary: str = None,
-        highlights: List[str] = None,
-        url: str = None,
-    ) -> None:
+        def __init__(self, data: dict, is_ending: bool = False) -> None:
+            self.url = data.get("url", "")
+            self.area = data.get("area", "")
+            self.endDate = data.get("endDate", "")
+            self.summary = data.get("summary", "")
+            self.location = data.get("location", "")
+            self.startDate = data.get("startDate", "")
+            self.studyType = data.get("studyType", "")
+            self.highlights = data.get("highlights", "")
+            self.institution = data.get("institution", "")
+            self.is_ending = is_ending
+            self.parse_dates()
 
-        self.institution = escape_latex(institution)
-        self.area = escape_latex(area)
-        self.studyType = studyType
-        self.startDate = startDate
-        self.endDate = endDate
-        self.gpa = gpa
-        self.url = url
-        self.summary = escape_latex(summary)
-        self.highlights = highlights
+        def parse_dates(self):
+            self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
+            self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
 
-    def parse_dates(self):
-        self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
-        self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
-
-    def to_latex(self):
-        self.parse_dates()
-        config = Education._config
-
-        template_str = """\
-            \\Education
-            {$studyType}
-            {$start to $end}
-            {$institution}
-            ${summary}.
-            """
-
-        template = Template(textwrap.dedent(template_str))
-        data = {
-            "studyType": self.studyType,
-            "area": self.area,
-            "gpa": self.gpa,
-            "start": self.start.strftime(config["datefmt"]),
-            "end": self.end.strftime(config["datefmt"]),
-            "institution": self.institution,
-            "summary": self.summary,
-        }
-        filled = template.safe_substitute(data)
-
-        if len(self.highlights):
-            highlights_str = """\
-                \\begin{itemize}
-                \t$highlights  
-                \\end{itemize}
+        def to_latex(self) -> str:
+            config_ = self.options()
+            template = Template(
+                """\
+                \\Education
+                {$studyType}
+                {$location}
+                {$institution}
+                {$start to $end}
                 """
-            highlights_template = Template(textwrap.dedent(highlights_str))
-            filled += highlights_template.safe_substitute(
-                {
-                    "highlights": "\n\t".join(
-                        [f"\\item {escape_latex(i)}" for i in self.highlights]
-                    ),
-                }
             )
+
+            highlights_template = Template(
+                textwrap.dedent(
+                    """\
+                    \\begin{itemize}
+                    $highlights  
+                    \\end{itemize}
+                    """
+                )
+            )
+
+            data = {
+                "end": self.end.strftime(config_.date_fmt),
+                "start": self.start.strftime(config_.date_fmt),
+                "location": self.location,
+                "studyType": self.studyType,
+                "institution": self.institution,
+            }
+
+            filled = fill_template(template, data)
+
+            if self.highlights:
+                highlights_text = "\n".join(
+                    [f"\\item {escape_latex(item)}" for item in self.highlights]
+                )
+                filled += fill_template(highlights_template, {"highlights": highlights_text})
+
+            if not self.is_ending:
+                filled += config_.seperator
+
+            else:
+                filled += "\n"
+            
+            logging.info(f"created Education for ({self.studyType}, {self.institution})")
             return filled
 
-        return filled + EMPTY_ITEMIZE
+    def __init__(self, education: List[dict]) -> None:
+        self.education_entries = education
+        self.last_idx = len(education) - 1
+
+    def to_latex(self) -> str:
+        filled = ""
+        for idx, education_entry in enumerate(self.education_entries):
+            is_last = idx == self.last_idx
+            filled += self.education(education_entry, is_last).to_latex()
+
+        return filled
 
 
-class TechnicalSkill:
-    def __init__(
-        self,
-        name: str = None,
-        level: str = None,
-        keywords: List[str] = None,
-    ) -> None:
+class Projects:
+    class project:
+        class options:
+            show_summary: bool = False
+            link_website: bool = False
+            date_fmt: str = "%b %Y"
+            seperator: str = "\n".join(["%", "\\bigskip", "%\n"])
 
-        self.name = name
-        self.level = level
-        self.keywords = keywords
+        def __init__(self, data: dict, is_ending: bool = False) -> None:
+            self.url = data.get("url")
+            self.type = data.get("type")
+            self.roles = data.get("roles")
+            self.entity = data.get("entity")
+            self.endDate = data.get("endDate")
+            self.keywords = data.get("keywords")
+            self.startDate = data.get("startDate")
+            self.name = escape_latex(data.get("name"))
+            self.highlights: List[str] = data.get("highlights")
+            self.description = escape_latex(data.get("description"))
+            self.is_ending = is_ending
+            self.parse_dates()
 
-    def to_latex(self):
-        template_str = "\\ItemSkill{$name} $items\n"
-        template = Template(template_str)
-        data = {
-            "name": escape_latex(self.name),
-            "items": ", ".join([i for i in self.keywords]),
-        }
-        return template.safe_substitute(data)
+        def parse_dates(self):
+            self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
+            self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
 
+        def to_latex(self):
+            def list_to_string_itemize(x: List[str], latex_esc=True):
+                if latex_esc:
+                    return "\n\t".join([f"\\item {escape_latex(i)}" for i in x])
+                else:
+                    return "\n\t".join([f"\\item {i}" for i in x])
 
-class Project:
-    _config = {"datefmt": "%b %Y"}
+            config_ = self.options()
+            template = Template(
+                """\
+                \\Project
+                {$name}
+                {$domain_name}
+                {$start to $end}
+                {$url}
+                {$keywords}
+                """
+            )
 
-    def __init__(self, data: dict) -> None:
-        self.name = escape_latex(data.get("name"))
-        self.description = escape_latex(data.get("description"))
-        self.highlights: List[str] = data.get("highlights")
-        self.keywords = data.get("keywords")
-        self.startDate = data.get("startDate")
-        self.endDate = data.get("endDate")
-        self.url = data.get("url")
-        self.roles = data.get("roles")
-        self.entity = data.get("entity")
-        self.type = data.get("type")
+            highlights_template = Template(
+                """\
+                \\begin{itemize}
+                \t$highlights
+                \\end{itemize}
+                """
+            )
 
-    def parse_dates(self):
-        self.start = datetime.strptime(self.startDate, "%Y-%m-%d")
-        self.end = datetime.strptime(self.endDate, "%Y-%m-%d")
+            data = {
+                "url": self.url,
+                "name": self.name,
+                "domain_name": self.type,
+                "keywords": ", ".join(self.keywords),
+                "end": self.end.strftime(config_.date_fmt),
+                "start": self.start.strftime(config_.date_fmt),
+            }
 
-    def to_latex(self):
-        self.parse_dates()
-        config = Project._config
+            highlights_data = {
+                "highlights": list_to_string_itemize(self.highlights),
+            }
 
-        template_str = """\
-            \\ProjectHead
-            {$name}
-            {$start to $end}
-            {$url}
-            {$keywords}
-            \\begin{itemize}
-            \t$highlights
-            \\end{itemize}
-            """
-        template = Template(textwrap.dedent(template_str))
+            filled = fill_template(template, data) + fill_template(
+                highlights_template, highlights_data
+            )
 
-        def list_to_string_itemize(x: List[str], latex_esc=True):
-            if latex_esc:
-                return "\n\t".join([f"\\item {escape_latex(i)}" for i in x])
+            if not self.is_ending:
+                filled += config_.seperator
+
             else:
-                return "\n\t".join([f"\\item {i}" for i in x])
+                filled += "\n"
+            
+            logging.info(f"created Project for ({self.name})")
+            return filled
 
-        data = {
-            "name": self.name,
-            "start": self.start.strftime(config["datefmt"]),
-            "end": self.end.strftime(config["datefmt"]),
-            "keywords": ", ".join(self.keywords),
-            "url": self.url,
-            "highlights": list_to_string_itemize(self.highlights),
-        }
-        return template.safe_substitute(data)
+    def __init__(self, projects: List[dict]) -> None:
+        self.projects = projects
+        self.last_idx = len(projects) - 1
 
+    def to_latex(self) -> str:
+        filled = ""
+        for idx, project in enumerate(self.projects):
+            is_last = idx == self.last_idx
+            filled += self.project(project, is_last).to_latex()
 
-class Achievement:
-    def __init__(self, data: dict) -> None:
-        self.title: str = escape_latex(data.get("title"))
-        pass
-
-    def to_latex(self):
-        return "\t\\item " + self.title.strip()
+        return filled
 
 
+class TechnicalSkills:
+    class Skill:
+        def __init__(self, data: dict) -> None:
+            self.name = data.get("name", "")
+            self.level = data.get("level", "")
+            self.keywords = data.get("keywords", "")
 
-def test():
-    def test_meta():
-        data = {
-            "name": "Ishaan Aditya",
-            "label": "MLE",
-            "picture": "",
-            "email": "ishaanaditya.v@gmail.com",
-            "phone": "916204507435",
-            "phoneFormat": "(+91) 620 450 7435",
-        }
-        meta = MetaData(data)
-        meta.set_colors()
-        print_latex_syntax(meta.to_latex())
+        def to_latex(self):
+            template = Template("\\ItemSkill{$name} $items\n")
+            data = {
+                "name": escape_latex(self.name),
+                "items": ", \\ ".join([i for i in self.keywords]),
+            }
+            logging.info(f"created TechSkills for ({self.name})")
+            return template.safe_substitute(data)
 
-    def test_profile_link():
-        data = {
-            "network": "github",
-            "username": "15H44N",
-            "url": "http://www.github.com/15H44N",
-        }
-        p = ProfileLink(**data)
-        print_latex_syntax(p.to_latex())
+    def __init__(self, skills: List[dict]) -> None:
+        self.skills = skills
 
-    def test_experience():
-        data = {
-            "company": "Axis Bank",
-            "position": "Summer Intern",
-            "website": "https://axisbank.com",
-            "startDate": "2021-05-24",
-            "endDate": "2021-07-16",
-            "summary": "",
-            "highlights": [
-                "Worked in Analytics (It was NOT Real job)",
-                "Made Spreadsheet, Document & PPT for no reason ",
-                "Wasted Time, Grinded Leetcode Problems by night",
-                "Awarded 'Volunteer of the Month'",
-            ],
-        }
+    def to_latex(self) -> str:
+        filled = "\\begin{ListSkills}\n"
+        for skill in self.skills:
+            filled = filled + "\t" + self.Skill(skill).to_latex()
 
-        e = Experience(**data)
-        print_latex_syntax(e.to_latex())
-
-    def test_education():
-        data = {
-            "institution": "Birla Institue of Technology, Mesra",
-            "area": "Electronics & Communication Engineering",
-            "studyType": "Bachelor of Technology",
-            "startDate": "2018-07-01",
-            "endDate": "2022-04-01",
-            "gpa": "7.98",
-            "highlights": [
-                "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
-                "Served as General Body Member, Dhwani Music Club, BIT Mesra",
-            ],
-        }
-
-        ed = Education(**data)
-        print_latex_syntax(ed.to_latex())
-
-    def test_techskills():
-        data = {
-            "name": "Libraries & Frameworks",
-            "level": "Noob",
-            "keywords": [
-                "Tensorflow",
-                "PyTorch",
-                "Selenium",
-                "SKLearn",
-                "Plotly",
-                "FastAPI",
-                "Pandas",
-                "BeautifulSoup",
-            ],
-        }
-        ts = TechnicalSkill(**data)
-        print_latex_syntax(ts.to_latex())
-
-    def test_projects():
-        data = {
-            "name": "Miss Direction",
-            "description": "A mapping engine that misguides you",
-            "highlights": [
-                "Won award at AIHacks 2016",
-                "Built by all women team of newbie programmers",
-                "Using modern technologies such as GoogleMaps, Chrome Extension and Javascript",
-            ],
-            "keywords": ["GoogleMaps", "Chrome Extension", "Javascript"],
-            "startDate": "2016-08-24",
-            "endDate": "2016-08-24",
-            "url": "missdirection.example.com",
-            "roles": ["Team lead", "Designer"],
-            "entity": "Smoogle",
-            "type": "application",
-        }
-
-        proj = Project(data)
-        print_latex_syntax(proj.to_latex())
-
-    # running tests
-    # test_profile_link()
-    # test_experience()
-    # test_education()
-    # test_techskills()
-    # test_projects()
-    test_meta()
+        return filled + "\\end{ListSkills}\n"
 
 
-if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.WARN,
-        format="%(levelname)s - %(asctime)s - %(message)s",
-        datefmt="%d-%b-%y %H:%M:%S",
-    )
-    test()
+class Achievements:
+    class Achv:
+        def __init__(self, data: dict) -> None:
+            self.title: str = escape_latex(data.get("title"))
+
+        def to_latex(self):
+            return "\t\\item " + self.title.strip() + "\n"
+
+    def __init__(self, achvs: List[dict]) -> None:
+        self.achvs = achvs
+
+    def to_latex(self) -> str:
+        filled = "\\begin{AchievementList}\n"
+        for achv in self.achvs:
+            filled = filled + self.Achv(achv).to_latex()
+
+        logging.info(f"created {len(self.achvs)} Achievements")
+        return filled + "\\end{AchievementList}\n"

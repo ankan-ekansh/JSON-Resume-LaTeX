@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastModified": "2021-07-27",
+    "lastModified": "2021-09-17",
     "main_color": "MaterialBlue",
     "sec_color": "MaterialGrey",
     "order": [
@@ -19,7 +19,7 @@
     "phone": "916204507435",
     "phoneFormat": "(+91) 620 450 7435", // custom
     "website": null,
-    "summary": "I am a good engineer. I hope",
+    "summary": "Electronics & Communication Engineering graduate, passionate about technology and programming. Have experience with machine learning, deep learning, natural language processing, web services and computer vision. Looking forward to gaining professional experience in Python and Java.",
     "location": {
       "address": "A3 Tata Officers' Colony, Dhanbad",
       "postalCode": "828301",
@@ -49,6 +49,7 @@
     {
       "company": "Axis Bank",
       "position": "Summer Intern",
+      "location": "Mumbai, India",
       "website": "https://www.axisbank.com",
       "startDate": "2021-05-24",
       "endDate": "2021-07-16",
@@ -60,8 +61,9 @@
       ]
     },
     {
-      "company": "Indian Institute of Technology ISM Dhanbad",
+      "company": "IIT ISM Dhanbad",
       "position": "Data Analyst Intern",
+      "location": "Dhanbad, India",
       "website": "https://www.iitism.ac.in/",
       "startDate": "2020-09-05",
       "endDate": "2020-11-24",
@@ -91,13 +93,13 @@
       "studyType": "Bachelor of Technology (ECE)",
       "startDate": "2018-07-01",
       "endDate": "2022-04-01",
-      "gpa": "8.11",
+      "location": "Ranchi, India",
       "url": "https://www.bitmesra.ac.in/",
-      "summary": "Bachelor of Technology in Electronics & Communication Engineering with OGPA of 8.11",
       "highlights": [
+        "Bachelor of Technology in Electronics & Communication Engineering with OGPA of 8.11",
         "Volunteered at National Service Scheme, BIT Mesra",
-        "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra",
-        "Served as General Body Member, Dhwani Music Club, BIT Mesra"
+        "Served as General Body Member, Dhwani Music Club, BIT Mesra",
+        "Served as Co-Coordinator of Finance & Sponsorship, Society for Data Science BIT Mesra"
       ]
     }
   ],
@@ -180,7 +182,7 @@
       "url": "https://github.com/15H44N/Whatsapp-DataViz",
       "roles": null,
       "entity": null,
-      "type": "Application"
+      "type": "Data Analysis"
     },
     {
       "name": "InterviewPrep",

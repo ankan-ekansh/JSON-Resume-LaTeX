@@ -1,0 +1,139 @@
+\DeclareRobustCommand{\sbseries}{\fontseries{sb}\selectfont}
+\newcommand{\textsb}[1]{\fontseries{sb}\selectfont #1}
+\setlist[itemize]{itemsep=0.5pt, leftmargin=1.5em, topsep=2pt}
+
+
+% Section Header Forrmatting
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\newcommand\ruleafter[1]{#1~\xrfill[0pt]{1pt}}
+
+\titleformat{\section}
+{\LARGE \sffamily \color{\MainColorDark} \bfseries}{}{0em}{}
+
+% Helper Commmands, General Use
+\newcommand{\LinkText}[1] % Monospaced, Underlined text for links
+{\texttt{\underline{#1\strut{}}}}
+
+\WithSuffix\newcommand\LinkText*[1] % just monospaced link text
+{\texttt{#1}}
+
+\newcommand{\PipeLinkSep}
+{\LinkSep {\texttt{|}} \LinkSep}
+
+% Resume Header
+\newcommand{\ResumeHeader}
+{
+    \begin{center}
+        {\Huge  \sffamily \bfseries \AuthorName} \\[0.5em]
+        \color{MaterialGrey600}
+        {\href{mailto:\email}{\LinkText*{\email}} \PipeLinkSep \href{tel:\phone}{\LinkText*{\PhoneFormatted}}}
+    \end{center}
+    \vspace{-0.85em}
+    \InsertProfileLinks
+}
+
+\newcommand{\ResumeProfilePhoto}[1]
+{% \hspace*{0.4cm}
+    \begin{center}
+        \begin{tikzpicture}[baseline=(pic.center),inner sep=0pt]
+            \begin{scope}
+                \clip (0,0)  circle (1.35cm) node (pic) {\includegraphics[width=2.7cm]{./assets/photos/#1}};
+            \end{scope}
+            \draw [ultra thick] [\SecColorDark] (0, 0) circle (1.355cm);
+        \end{tikzpicture}%    
+    \end{center}
+}
+
+\newcommand{\ResumeHeaderWithPhoto}
+{%
+    \vspace{-2em}
+    \begin{minipage}{0.75\textwidth}
+        \ResumeHeader
+    \end{minipage}%
+    \begin{minipage}{0.25\textwidth}
+        \ResumeProfilePhoto{profile.jpg}
+    \end{minipage}
+}
+
+% Below Title (Links to Profiles)
+
+% Spacing Parameters
+\newlength{\linkseplength}
+\setlength{\linkseplength}{0.35em}
+\newcommand{\LinkSep}{\hspace{\linkseplength}}
+
+% ProfileLink command for Font Awesome Icons
+\newcommand{\ProfileLink}[4]
+{\color{#1}{\faIcon{#2}} \href{#3}{\color{#1}{\LinkText{#4}}} \LinkSep}
+
+% Custom ICONS from PDF files in ../res/icons folder, Syntax same as ProfileLink
+%%% ImageChar commands to put pdf image as character
+% image as char, non suffixed, scaled to 1em
+\newcommand{\ImageChar}[1] 
+{{\normalfont\includegraphics[height=1em]{#1}}}
+
+% Image as char, suffixed, scale to size of full line pipe
+\WithSuffix\newcommand\ImageChar*[1] 
+{\scalerel*{\includegraphics[height=1em]{#1}}{\small{\texttt{|}}}}
+
+% Alt Profile Link with Custom icons, uses (Non Suffixed) \ImageChar
+\newcommand{\AltProfileLink}[4]
+{\ImageChar{\IconPath#2.pdf}  \href{#3}{\color{#1}{\LinkText{#4}}} \LinkSep}
+
+% Alt Profile Link* with Custom icons, uses \ImageChar*
+\WithSuffix\newcommand\AltProfileLink*[4]
+{\ImageChar*{\IconPath#2.pdf} \href{#3}{\color{#1}{\texttt{#4}}} \LinkSep}
+
+%  Professional Experience
+\newcommand{\Experience}[4]
+{
+    {\large \sffamily \bfseries #1} \hfill
+    {\color{\MainColorDark}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \hfill
+    {\color{\SecColorLight}{\textsl{#4}}}\medskip
+}
+
+%  Education Section
+\newcommand{\Education}[4]
+{
+    {\large \sffamily \bfseries #1} \hfill
+    {\color{\MainColorDark}{\textsl{#2}}} \\[1pt]
+    {\color{\SecColorDark}{\textsl{#3}}} \hfill
+    {\color{\SecColorLight}{\textsl{#4}}}\medskip
+}
+
+% Technical Skills List (Currently Using)
+\newenvironment{ListSkills}
+{\begin{itemize}}
+{\end{itemize}}
+
+\newcommand{\ItemSkill}[1]
+{\item[{\textbullet}] {\normalsize \bfseries {#1}:} \normalcolor}
+
+
+% Projects
+\newcommand{\Project}[5]
+{
+    \href{#4}
+    {{\large \sffamily \bfseries #1}
+     {\color{\SecColorLight}{\small\faIcon{external-link-alt}}}
+    }\hfill
+    {\textsl{\color{\MainColorDark}{#2}}}\\[1pt]
+    \color{\SecColorDark}{\textsl{#5}}
+    \hfill
+    {\textsl{\color{\SecColorLight}{#3}}}
+    \normalcolor
+    \smallskip
+}
+
+% Achievements Section
+\newenvironment{YearAchievementList}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=1em, itemindent=1.15em]}
+{\end{itemize}}
+
+\newenvironment{AchievementList}
+{\begin{itemize}[itemsep=0.5pt, leftmargin=2em, topsep=2pt, label={\color{\MainColorDark}{\faTrophy}}]}
+{\end{itemize}}
+
+\newcommand{\AchvLine}[2]{{\bfseries #1}, #2}
+\newcommand{\AchvItem}[1]{\item[{\color{\MainColorDark}{#1}}]}

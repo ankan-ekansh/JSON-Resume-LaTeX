@@ -1,0 +1,59 @@
+% !TEX program = xelatex
+\documentclass[a4paper]{article}
+\usepackage{titlesec} 
+\usepackage{titling}
+\usepackage[margin=0.3in]{geometry}
+\usepackage{fontawesome5} 
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[prefix=Material]{xcolor-material}
+\usepackage{blindtext}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{fontspec}  
+\usepackage{multicol}
+\usepackage{scalerel}  
+\usepackage{suffix}
+\usepackage{xhfill}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usetikzlibrary{calc}
+\pagestyle{empty}
+
+\input{./meta.tex}
+
+% PDF METADATA
+\usepackage[
+    hidelinks, pdfauthor={\AuthorName},
+    pdftitle={Resume (\AuthorName)},
+    pdfsubject={}, pdfkeywords={\PositionName},
+    pdfproducer={LaTeX}, pdfcreator={}
+]{hyperref}
+
+\newcommand{\ResPath}{./assets}
+\newcommand{\FontPath}[1]{\ResPath/fonts/#1/}
+\newcommand{\IconPath}{\ResPath/icons/}
+
+\setsansfont{Neutraface2Text}[
+    Path = \FontPath{Neutraface2Text}, Extension = .otf,
+    UprightFont = *-Book, ItalicFont = *-BookItalic,
+    BoldFont = *-Demi, BoldItalicFont = *-DemiItalic
+]
+
+\setmainfont{Lato}[
+    Path = \FontPath{Lato}, Extension = .ttf,
+    UprightFont = *-Regular, BoldFont = *-Bold, 
+    ItalicFont = *-Italic, BoldItalicFont = *-BoldItalic,]
+
+\setmonofont{FiraCode}[
+    Path = \FontPath{Fira-Code}, Extension = .ttf,
+    UprightFont = *-Regular]
+
+\input{./macros.tex}
+
+\begin{document}
+\maketitle
+
+\input{./content.tex}
+
+\end{document}
